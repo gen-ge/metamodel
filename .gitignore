@@ -208,6 +208,8 @@ coverage.xml
 docs/_build/
 docs/build/
 site/
+.docs/
+
 
 # Jupyter Notebooks
 .ipynb_checkpoints

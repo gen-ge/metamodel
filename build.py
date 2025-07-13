@@ -215,6 +215,7 @@ python3 install.py
         print(f"\n📦 Criando arquivo .tar.gz...")
         
         try:
+            # Arquivo com versão específica
             tarball_name = f"context-navigator-{self.version}.tar.gz"
             tarball_path = self.dist_dir / tarball_name
             
@@ -223,6 +224,16 @@ python3 install.py
                 
             print(f"✅ Criado: {tarball_path}")
             print(f"📊 Tamanho: {tarball_path.stat().st_size / 1024:.1f} KB")
+            
+            # Criar também versão "latest" para facilitar download
+            latest_name = "context-navigator-latest.tar.gz"
+            latest_path = self.dist_dir / latest_name
+            
+            with tarfile.open(latest_path, 'w:gz') as tar:
+                tar.add(self.package_dir, arcname=f"context-navigator-{self.version}")
+                
+            print(f"✅ Criado: {latest_path} (alias para latest)")
+            print(f"📊 Tamanho: {latest_path.stat().st_size / 1024:.1f} KB")
             
             return True
         except Exception as e:
@@ -274,8 +285,8 @@ def download_and_install():
     print("🚀 Context Navigator - Instalador Standalone v{self.version}")
     print("📥 Baixando e instalando...")
     
-    # URL do pacote (você deve hospedar o arquivo)
-    package_url = "https://github.com/[SEU_USUARIO]/context-navigator/releases/download/v{self.version}/context-navigator-{self.version}.tar.gz"
+         # URL do pacote (sempre a versão mais recente)
+     package_url = "https://github.com/gen-ge/metamodel/releases/latest/download/context-navigator-latest.tar.gz"
     
     try:
         # Criar diretório temporário
@@ -292,10 +303,16 @@ def download_and_install():
             with tarfile.open(package_path, 'r:gz') as tar:
                 tar.extractall(temp_path)
                 
-            # Executar instalação
-            print("⚙️  Instalando...")
-            install_dir = temp_path / "context-navigator-{self.version}"
-            install_script = install_dir / "install.py"
+                         # Executar instalação
+             print("⚙️  Instalando...")
+             # Procurar diretório extraído (pode ter qualquer versão)
+             import glob
+             extracted_dirs = glob.glob(str(temp_path / "context-navigator-*"))
+             if not extracted_dirs:
+                 print("❌ Diretório extraído não encontrado")
+                 return False
+             install_dir = Path(extracted_dirs[0])
+             install_script = install_dir / "install.py"
             
             if install_script.exists():
                 os.system(f"cd {{install_dir}} && python3 install.py")
@@ -320,14 +337,81 @@ if __name__ == "__main__":
 """
         
         try:
-            standalone_path = self.dist_dir / f"install-context-navigator-{self.version}.py"
+            # Criar instalador como .txt (GitHub não bloqueia)
+            standalone_path = self.dist_dir / f"install-context-navigator-{self.version}.txt"
             with open(standalone_path, 'w', encoding='utf-8') as f:
                 f.write(installer_script)
                 
-            # Tornar executável
-            os.chmod(standalone_path, 0o755)
-            
             print(f"✅ Criado: {standalone_path}")
+            
+            # Criar também versão "latest" para facilitar download
+            latest_installer_path = self.dist_dir / "install-context-navigator-latest.txt"
+            with open(latest_installer_path, 'w', encoding='utf-8') as f:
+                f.write(installer_script)
+                
+            print(f"✅ Criado: {latest_installer_path} (alias para latest)")
+            
+            # Criar script shell como alternativa
+            shell_script = f'''#!/bin/bash
+# Context Navigator - Instalador Shell v{self.version}
+# Download e instalação automática do Context Navigator
+
+echo "🚀 Context Navigator - Instalador v{self.version}"
+echo "📥 Baixando e instalando..."
+
+# Criar diretório temporário
+temp_dir=$(mktemp -d)
+cd "$temp_dir"
+
+# Baixar pacote
+echo "📥 Baixando pacote..."
+wget -q https://github.com/gen-ge/metamodel/releases/latest/download/context-navigator-latest.tar.gz
+
+if [ $? -ne 0 ]; then
+    echo "❌ Erro ao baixar pacote"
+    exit 1
+fi
+
+# Extrair pacote
+echo "📦 Extraindo pacote..."
+tar -xzf context-navigator-latest.tar.gz
+
+# Encontrar diretório extraído
+extracted_dir=$(find . -name "context-navigator-*" -type d | head -1)
+
+if [ -z "$extracted_dir" ]; then
+    echo "❌ Diretório extraído não encontrado"
+    exit 1
+fi
+
+# Executar instalação
+echo "⚙️  Instalando..."
+cd "$extracted_dir"
+python3 install.py
+
+if [ $? -eq 0 ]; then
+    echo "✅ Instalação concluída!"
+    echo "💡 Execute './cn help' para começar"
+else
+    echo "❌ Falha na instalação"
+    exit 1
+fi
+
+# Limpar diretório temporário
+cd /
+rm -rf "$temp_dir"
+'''
+            
+            # Criar script shell
+            shell_path = self.dist_dir / "install-context-navigator-latest.sh"
+            with open(shell_path, 'w', encoding='utf-8') as f:
+                f.write(shell_script)
+                
+            # Tornar executável
+            os.chmod(shell_path, 0o755)
+            
+            print(f"✅ Criado: {shell_path} (script shell)")
+            
             return True
         except Exception as e:
             print(f"❌ Erro ao criar instalador: {e}")
