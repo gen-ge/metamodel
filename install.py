@@ -215,6 +215,7 @@ def show_help():
 🧭 Context Navigator - Comandos Disponíveis
 
 📊 PRINCIPAIS:
+  cn setup                   Inicializar workspace
   cn scan                    Escanear documentos
   cn demo                    Demonstração completa
   cn validate                Validar métricas
@@ -304,18 +305,62 @@ def create_document(doc_type, name=None):
     else:
         filename = f"{{doc_type}}_{{datetime.now().strftime('%Y%m%d_%H%M%S')}}.md"
         
-    # Copiar template
+    # Copiar template para pasta docs/
     try:
         import shutil
         from datetime import datetime
         
-        shutil.copy2(template_path, filename)
-        print(f"✅ Documento criado: {{filename}}")
+        # Criar pasta docs/ se não existir
+        docs_path = Path("docs")
+        docs_path.mkdir(exist_ok=True)
+        
+        # Caminho completo do arquivo
+        full_path = docs_path / filename
+        
+        shutil.copy2(template_path, full_path)
+        print(f"✅ Documento criado: {{full_path}}")
         print(f"📝 Edite o arquivo e preencha os metadados obrigatórios")
         print(f"🔍 Depois execute: cn scan")
         return 0
     except Exception as e:
         print(f"❌ Erro ao criar documento: {{e}}")
+        return 1
+
+def setup_workspace():
+    """Inicializa workspace do Context Navigator"""
+    cn_dir = find_context_navigator()
+    
+    if not cn_dir:
+        print("❌ Context Navigator não encontrado")
+        return 1
+        
+    print("🚀 Inicializando workspace do Context Navigator...")
+    
+    try:
+        # Criar estrutura de pastas
+        folders = ["docs", "templates", "examples", ".context-map"]
+        for folder in folders:
+            Path(folder).mkdir(exist_ok=True)
+            print(f"✅ Criada pasta: {{folder}}/")
+        
+        # Copiar .contextrc se não existir
+        contextrc_path = Path(".contextrc")
+        if not contextrc_path.exists():
+            source_contextrc = cn_dir / ".contextrc"
+            if source_contextrc.exists():
+                import shutil
+                shutil.copy2(source_contextrc, contextrc_path)
+                print(f"✅ Copiado arquivo de configuração: .contextrc")
+        
+        print("\\n🎉 Workspace inicializado com sucesso!")
+        print("\\n🚀 PRÓXIMOS PASSOS:")
+        print("1. 📝 Crie seu primeiro documento: cn new decision exemplo")
+        print("2. 🔍 Escaneie documentos: cn scan")
+        print("3. 🧪 Teste o sistema: cn demo")
+        
+        return 0
+    except Exception as e:
+        print(f"❌ Erro ao inicializar workspace: {{e}}")
         return 1
 
 def show_status():
@@ -351,7 +396,9 @@ def main():
     args = sys.argv[2:] if len(sys.argv) > 2 else []
     
     # Comandos principais
-    if command == "scan":
+    if command == "setup":
+        return setup_workspace()
+    elif command == "scan":
         return run_script("context_scanner", args)
     elif command == "demo":
         return run_script("context_demo", ["--full"] + args)

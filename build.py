@@ -25,7 +25,7 @@ class ContextNavigatorBuilder:
             version: Versão do build (se não especificada, usa timestamp)
         """
         self.source_dir = Path(source_dir).resolve()
-        self.version = version or "1.0.6"
+        self.version = version or "1.0.7"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         
