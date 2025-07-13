@@ -25,7 +25,7 @@ class ContextNavigatorBuilder:
             version: Versão do build (se não especificada, usa timestamp)
         """
         self.source_dir = Path(source_dir).resolve()
-        self.version = version or datetime.now().strftime('%Y%m%d-%H%M%S')
+        self.version = version or "1.0.6"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         
@@ -359,6 +359,9 @@ if __name__ == "__main__":
 echo "🚀 Context Navigator - Instalador v{self.version}"
 echo "📥 Baixando e instalando..."
 
+# Salvar workspace original
+original_dir=$(pwd)
+
 # Criar diretório temporário
 temp_dir=$(mktemp -d)
 cd "$temp_dir"
@@ -384,10 +387,10 @@ if [ -z "$extracted_dir" ]; then
     exit 1
 fi
 
-# Executar instalação
+# Executar instalação no workspace original
 echo "⚙️  Instalando..."
 cd "$extracted_dir"
-python3 install.py
+python3 install.py --target "$original_dir"
 
 if [ $? -eq 0 ]; then
     echo "✅ Instalação concluída!"
