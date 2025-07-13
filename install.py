@@ -272,27 +272,27 @@ def run_script(script_name, args=None):
         print(f"❌ Erro ao executar script: {{e}}")
         return 1
 
- def create_document(doc_type, name=None):
-     """Cria novo documento baseado em template"""
-     cn_dir = find_context_navigator()
-     
-     if not cn_dir:
-         print("❌ Context Navigator não encontrado")
-         return 1
-         
-     # Mapeamento de tipos em inglês para português
-     type_mapping = {{
-         "decision": "decisao",
-         "process": "processo",
-         "reference": "referencia",
-         "architecture": "arquitetura",
-         "analysis": "analise",
-         "planning": "planejamento"
-     }}
-     
-     # Usar mapeamento ou o tipo original
-     template_name = type_mapping.get(doc_type, doc_type)
-     template_path = cn_dir / "templates" / f"{{template_name}}.md"
+def create_document(doc_type, name=None):
+    """Cria novo documento baseado em template"""
+    cn_dir = find_context_navigator()
+    
+    if not cn_dir:
+        print("❌ Context Navigator não encontrado")
+        return 1
+        
+    # Mapeamento de tipos em inglês para português
+    type_mapping = {{
+        "decision": "decisao",
+        "process": "processo",
+        "reference": "referencia",
+        "architecture": "arquitetura",
+        "analysis": "analise",
+        "planning": "planejamento"
+    }}
+    
+    # Usar mapeamento ou o tipo original
+    template_name = type_mapping.get(doc_type, doc_type)
+    template_path = cn_dir / "templates" / f"{{template_name}}.md"
     
     if not template_path.exists():
         print(f"❌ Template não encontrado: {{doc_type}}")
