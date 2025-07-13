@@ -310,5 +310,109 @@
     "total_affected": 1,
     "confidence": 1.0,
     "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.775998",
+    "source_document": "docs/CONVENTIONS.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776262",
+    "source_document": "docs/MANUAL_HUMANO.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776519",
+    "source_document": "docs/MANUAL_IA.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776647",
+    "source_document": "examples/exemplo_arquitetura.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776762",
+    "source_document": "examples/exemplo_decisao.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776860",
+    "source_document": "examples/exemplo_processo.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.776954",
+    "source_document": "examples/exemplo_referencia.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777131",
+    "source_document": "templates/analise.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777334",
+    "source_document": "templates/arquitetura.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777511",
+    "source_document": "templates/decisao.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777632",
+    "source_document": "templates/planejamento.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777768",
+    "source_document": "templates/processo.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
+  },
+  {
+    "timestamp": "2025-07-13T11:17:53.777917",
+    "source_document": "templates/referencia.md",
+    "change_type": "create",
+    "total_affected": 1,
+    "confidence": 1.0,
+    "estimated_effort": "30-60 minutos"
   }
 ]

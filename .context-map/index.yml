@@ -132,7 +132,7 @@ project:
   version: 1.0.0
 scan_info:
   conflicts: 8
-  timestamp: '2025-07-12T22:39:47.481609'
+  timestamp: '2025-07-13T13:18:33.378985'
   total_documents: 13
   validation_errors: 0
 type_distribution:

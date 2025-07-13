@@ -1,5 +1,5 @@
 {
-  "last_analysis": "2025-07-12T22:35:21.181694",
+  "last_analysis": "2025-07-13T11:17:53.918207",
   "patterns": [
     {
       "pattern_id": "usage_type_reference",
@@ -32,7 +32,7 @@
       "pattern_id": "structure_consistent_size",
       "pattern_type": "structure",
       "name": "Tamanho Consistente de Documentos",
-      "description": "Documentos têm tamanho consistente (média: 2318 palavras, desvio: 873)",
+      "description": "Documentos têm tamanho consistente (média: 2323 palavras, desvio: 872)",
       "frequency": 13,
       "confidence": 0.8,
       "impact_level": "medium"
@@ -79,19 +79,10 @@
       "anomaly_id": "size_outlier_docs/MANUAL_HUMANO.md",
       "anomaly_type": "outlier",
       "name": "Tamanho Anômalo: docs/MANUAL_HUMANO.md",
-      "description": "Documento tem 4422 palavras (média: 2318)",
+      "description": "Documento tem 4422 palavras (média: 2323)",
       "severity": "medium",
       "confidence": 0.8,
       "affected_count": 1
-    },
-    {
-      "anomaly_id": "connection_isolated",
-      "anomaly_type": "gap",
-      "name": "Documentos Isolados",
-      "description": "6 documentos não têm conexões",
-      "severity": "medium",
-      "confidence": 0.8,
-      "affected_count": 6
     }
   ],
   "suggestions": [
