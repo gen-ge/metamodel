@@ -1,0 +1,187 @@
+components: {}
+contexts:
+  hierarchical:
+    c1_root:
+    - module: context-navigator
+      path: docs/CONVENTIONS.md
+      title: null
+      type: reference
+    - module: context-navigator
+      path: docs/MANUAL_IA.md
+      title: null
+      type: reference
+    - module: context-navigator
+      path: docs/MANUAL_HUMANO.md
+      title: null
+      type: reference
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/arquitetura.md
+      title: '[PREENCHER] Título da Arquitetura'
+      type: architecture
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/planejamento.md
+      title: '[PREENCHER] Título do Planejamento'
+      type: planning
+    - module: e-commerce-platform
+      path: examples/exemplo_arquitetura.md
+      title: null
+      type: architecture
+    c2_module:
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/processo.md
+      title: '[PREENCHER] Título do Processo'
+      type: process
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/referencia.md
+      title: '[PREENCHER] Título da Referência'
+      type: reference
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/decisao.md
+      title: '[PREENCHER] Título da Decisão'
+      type: decision
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/analise.md
+      title: '[PREENCHER] Título da Análise'
+      type: analysis
+    - module: deployment
+      path: examples/exemplo_processo.md
+      title: null
+      type: process
+    - module: authentication
+      path: examples/exemplo_decisao.md
+      title: null
+      type: decision
+    c3_component:
+    - module: user-management
+      path: examples/exemplo_referencia.md
+      title: null
+      type: reference
+  specialized:
+    api:
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/referencia.md
+      title: '[PREENCHER] Título da Referência'
+      type: reference
+    - module: authentication
+      path: examples/exemplo_decisao.md
+      title: null
+      type: decision
+    - module: user-management
+      path: examples/exemplo_referencia.md
+      title: null
+      type: reference
+    core:
+    - module: context-navigator
+      path: docs/CONVENTIONS.md
+      title: null
+      type: reference
+    - module: context-navigator
+      path: docs/MANUAL_IA.md
+      title: null
+      type: reference
+    - module: context-navigator
+      path: docs/MANUAL_HUMANO.md
+      title: null
+      type: reference
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/decisao.md
+      title: '[PREENCHER] Título da Decisão'
+      type: decision
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/arquitetura.md
+      title: '[PREENCHER] Título da Arquitetura'
+      type: architecture
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/analise.md
+      title: '[PREENCHER] Título da Análise'
+      type: analysis
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/planejamento.md
+      title: '[PREENCHER] Título do Planejamento'
+      type: planning
+    - module: e-commerce-platform
+      path: examples/exemplo_arquitetura.md
+      title: null
+      type: architecture
+    infra:
+    - module: '[PREENCHER] Nome do Módulo'
+      path: templates/processo.md
+      title: '[PREENCHER] Título do Processo'
+      type: process
+    - module: deployment
+      path: examples/exemplo_processo.md
+      title: null
+      type: process
+modules:
+  '[PREENCHER] Nome do Módulo':
+  - context_level: c2_module
+    context_type: infra
+    path: templates/processo.md
+    title: '[PREENCHER] Título do Processo'
+    type: process
+  - context_level: c2_module
+    context_type: api
+    path: templates/referencia.md
+    title: '[PREENCHER] Título da Referência'
+    type: reference
+  - context_level: c2_module
+    context_type: core
+    path: templates/decisao.md
+    title: '[PREENCHER] Título da Decisão'
+    type: decision
+  - context_level: c1_root
+    context_type: core
+    path: templates/arquitetura.md
+    title: '[PREENCHER] Título da Arquitetura'
+    type: architecture
+  - context_level: c2_module
+    context_type: core
+    path: templates/analise.md
+    title: '[PREENCHER] Título da Análise'
+    type: analysis
+  - context_level: c1_root
+    context_type: core
+    path: templates/planejamento.md
+    title: '[PREENCHER] Título do Planejamento'
+    type: planning
+  authentication:
+  - context_level: c2_module
+    context_type: api
+    path: examples/exemplo_decisao.md
+    title: null
+    type: decision
+  context-navigator:
+  - context_level: c1_root
+    context_type: core
+    path: docs/CONVENTIONS.md
+    title: null
+    type: reference
+  - context_level: c1_root
+    context_type: core
+    path: docs/MANUAL_IA.md
+    title: null
+    type: reference
+  - context_level: c1_root
+    context_type: core
+    path: docs/MANUAL_HUMANO.md
+    title: null
+    type: reference
+  deployment:
+  - context_level: c2_module
+    context_type: infra
+    path: examples/exemplo_processo.md
+    title: null
+    type: process
+  e-commerce-platform:
+  - context_level: c1_root
+    context_type: core
+    path: examples/exemplo_arquitetura.md
+    title: null
+    type: architecture
+  user-management:
+  - context_level: c3_component
+    context_type: api
+    path: examples/exemplo_referencia.md
+    title: null
+    type: reference
+patterns: {}

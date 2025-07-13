@@ -1,0 +1,89 @@
+{
+  "summary": {
+    "total_documents": 13,
+    "documents_with_errors": 0,
+    "total_errors": 0
+  },
+  "errors_by_type": {},
+  "errors_by_document": {},
+  "validation_details": [
+    {
+      "document": "docs/CONVENTIONS.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "docs/MANUAL_IA.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "docs/MANUAL_HUMANO.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/processo.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/referencia.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/decisao.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/arquitetura.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/analise.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "templates/planejamento.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "examples/exemplo_processo.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "examples/exemplo_arquitetura.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "examples/exemplo_decisao.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    {
+      "document": "examples/exemplo_referencia.md",
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    }
+  ]
+}

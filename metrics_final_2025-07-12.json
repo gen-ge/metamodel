@@ -1,0 +1,148 @@
+{
+  "timestamp": "2025-07-12T22:45:27.371404",
+  "overall_score": 83.88888888888889,
+  "passed_metrics": 7,
+  "total_metrics": 9,
+  "pass_rate": 77.77777777777779,
+  "evaluations": {
+    "ai_consistency": {
+      "score": 100.0,
+      "target": 95.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ context.rule existe",
+        "✅ context.rule tem conteúdo substancial",
+        "✅ Manual da IA existe",
+        "✅ Convenções definidas"
+      ]
+    },
+    "documentation_coverage": {
+      "score": 100.0,
+      "target": 90.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ docs/CONVENTIONS.md - metadados completos",
+        "✅ docs/MANUAL_HUMANO.md - metadados completos",
+        "✅ docs/MANUAL_IA.md - metadados completos",
+        "✅ examples/exemplo_arquitetura.md - metadados completos",
+        "✅ examples/exemplo_decisao.md - metadados completos",
+        "✅ examples/exemplo_processo.md - metadados completos",
+        "✅ examples/exemplo_referencia.md - metadados completos",
+        "✅ templates/analise.md - metadados completos",
+        "✅ templates/arquitetura.md - metadados completos",
+        "✅ templates/decisao.md - metadados completos",
+        "✅ templates/planejamento.md - metadados completos",
+        "✅ templates/processo.md - metadados completos",
+        "✅ templates/referencia.md - metadados completos"
+      ],
+      "stats": {
+        "total_documents": 13,
+        "with_metadata": 13,
+        "coverage_percentage": 100.0
+      }
+    },
+    "automatic_detection": {
+      "score": 100.0,
+      "target": 95.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ c1_root: 6 documentos",
+        "✅ c2_module: 6 documentos",
+        "✅ c3_component: 1 documentos"
+      ],
+      "stats": {
+        "total_documents": 13,
+        "detected_documents": 13,
+        "unknown_documents": 0,
+        "detection_percentage": 100.0
+      }
+    },
+    "conflict_resolution": {
+      "score": 55,
+      "target": 90.0,
+      "status": "❌ FAIL",
+      "details": [
+        "⚠️ duplicate_references: 9 (aviso)",
+        "⚠️ orphaned_document: 0 (crítico)"
+      ],
+      "stats": {
+        "total_conflicts": 8,
+        "resolution_score": 55
+      }
+    },
+    "efficiency": {
+      "score": 100.0,
+      "target": 80.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ 6 templates disponíveis",
+        "✅ 9 scripts de automação",
+        "✅ Documentação completa",
+        "✅ 7 mapas de contexto",
+        "✅ Conexões entre documentos mapeadas"
+      ]
+    },
+    "context_switch_time": {
+      "score": 100.0,
+      "target": 2.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ Índice centralizado disponível",
+        "✅ Context rule para IA disponível",
+        "✅ Navegação por conexões disponível"
+      ],
+      "stats": {
+        "estimated_time_minutes": 0.5,
+        "infrastructure_score": 100.0
+      }
+    },
+    "connection_precision": {
+      "score": 0.0,
+      "target": 95.0,
+      "status": "❌ FAIL",
+      "details": [
+        "❌ Nenhuma conexão encontrada"
+      ],
+      "stats": {
+        "total_connections": 0,
+        "valid_connections": 0,
+        "broken_connections": 0,
+        "precision_percentage": 0.0
+      }
+    },
+    "template_completeness": {
+      "score": 100.0,
+      "target": 100.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ decisao.md disponível",
+        "✅ processo.md disponível",
+        "✅ referencia.md disponível",
+        "✅ arquitetura.md disponível",
+        "✅ analise.md disponível",
+        "✅ planejamento.md disponível"
+      ],
+      "stats": {
+        "required_templates": 6,
+        "existing_templates": 6,
+        "missing_templates": 0,
+        "completeness_percentage": 100.0
+      }
+    },
+    "manual_intervention": {
+      "score": 100.0,
+      "target": 0.0,
+      "status": "✅ PASS",
+      "details": [
+        "✅ Scanner automático disponível",
+        "✅ Validador automático disponível",
+        "✅ Detector de conflitos disponível",
+        "✅ Engine de contexto disponível"
+      ],
+      "stats": {
+        "automation_score": 100.0,
+        "intervention_needed": 0.0
+      }
+    }
+  }
+}

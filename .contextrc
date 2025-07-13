@@ -1,0 +1,540 @@
+# 🎯 Context Navigator - Configuração Metodológica
+# Arquivo central que define todas as convenções imutáveis da metodologia
+# Versão: 1.0.0
+# Data: 2024-01-15
+
+# =============================================================================
+# METADADOS DO PROJETO
+# =============================================================================
+
+project:
+  name: "Context Navigator"
+  version: "1.0.0"
+  description: "Metodologia de parceria humano-IA para documentação context-aware"
+  author: "Context Navigator Team"
+  created_date: "2024-01-15"
+  
+methodology:
+  type: "context-aware-documentation"
+  scope: "human-ai-partnership"
+  target: "solo-development"
+  
+# =============================================================================
+# TIPOS DE DOCUMENTO (IMUTÁVEIS)
+# =============================================================================
+
+document_types:
+  decision:
+    name: "Decisão"
+    description: "Documentos de decisão técnica, arquitetural e de produto"
+    template: "decisao.md"
+    usage: ["PRD", "ADR", "RFC", "escolhas técnicas", "decisões arquiteturais"]
+    estimated_usage: 40
+    
+  process:
+    name: "Processo"
+    description: "Documentos de processo, procedimento e tutorial"
+    template: "processo.md"
+    usage: ["runbooks", "playbooks", "tutoriais", "procedimentos", "guias"]
+    estimated_usage: 20
+    
+  reference:
+    name: "Referência"
+    description: "Documentos de referência técnica e especificação"
+    template: "referencia.md"
+    usage: ["APIs", "glossários", "especificações", "documentação técnica"]
+    estimated_usage: 15
+    
+  architecture:
+    name: "Arquitetura"
+    description: "Documentos de arquitetura e modelagem"
+    template: "arquitetura.md"
+    usage: ["diagramas", "modelagem", "estrutura", "componentes", "design"]
+    estimated_usage: 10
+    
+  analysis:
+    name: "Análise"
+    description: "Documentos de análise e investigação"
+    template: "analise.md"
+    usage: ["performance", "bugs", "retrospectivas", "investigações", "métricas"]
+    estimated_usage: 10
+    
+  planning:
+    name: "Planejamento"
+    description: "Documentos de planejamento e cronograma"
+    template: "planejamento.md"
+    usage: ["roadmaps", "sprints", "releases", "marcos", "cronogramas"]
+    estimated_usage: 5
+
+# =============================================================================
+# SISTEMA DE CONTEXTOS (HIERÁRQUICO + ESPECIALIZADO)
+# =============================================================================
+
+contexts:
+  # Contextos hierárquicos principais
+  hierarchical:
+    c1_root:
+      name: "Contexto Raiz"
+      description: "Contexto principal do projeto"
+      level: 1
+      examples: ["Gen/", "project_root/", "main/"]
+      
+    c2_module:
+      name: "Contexto Módulo"
+      description: "Contexto de módulo ou componente principal"
+      level: 2
+      examples: ["front/", "back/", "shared/", "api/", "web/", "mobile/"]
+      
+    c3_component:
+      name: "Contexto Componente"
+      description: "Contexto de componente específico"
+      level: 3
+      examples: ["auth/", "payment/", "user/", "order/", "notification/"]
+  
+  # Contextos especializados (baseado em DDD)
+  specialized:
+    infra:
+      name: "Infraestrutura"
+      description: "Contexto de infraestrutura e deploy"
+      category: "technical"
+      examples: ["deploy/", "infrastructure/", "docker/", "k8s/", "aws/"]
+      
+    shared:
+      name: "Compartilhado"
+      description: "Contexto de componentes compartilhados"
+      category: "technical"
+      examples: ["common/", "utils/", "lib/", "helpers/", "shared/"]
+      
+    core:
+      name: "Núcleo"
+      description: "Contexto de lógica de negócio central"
+      category: "business"
+      examples: ["domain/", "business/", "core/", "entities/", "services/"]
+      
+    api:
+      name: "Interface"
+      description: "Contexto de interfaces e contratos"
+      category: "technical"
+      examples: ["endpoints/", "controllers/", "routes/", "graphql/", "rest/"]
+      
+    data:
+      name: "Dados"
+      description: "Contexto de persistência e dados"
+      category: "technical"
+      examples: ["models/", "repositories/", "database/", "migrations/", "seeds/"]
+      
+    ui:
+      name: "Interface de Usuário"
+      description: "Contexto de interface de usuário"
+      category: "presentation"
+      examples: ["views/", "components/", "pages/", "layouts/", "styles/"]
+
+# =============================================================================
+# METADADOS OBRIGATÓRIOS E OPCIONAIS
+# =============================================================================
+
+metadata:
+  # Campos obrigatórios em todos os documentos (IMUTÁVEIS)
+  required_fields:
+    doc_type:
+      description: "Tipo do documento (decision/process/reference/architecture/analysis/planning)"
+      type: "string"
+      values: ["decision", "process", "reference", "architecture", "analysis", "planning"]
+      
+    context_level:
+      description: "Nível hierárquico do contexto (c1/c2/c3)"
+      type: "string"
+      values: ["c1_root", "c2_module", "c3_component"]
+      
+    context_type:
+      description: "Tipo especializado do contexto"
+      type: "string"
+      values: ["infra", "shared", "core", "api", "data", "ui"]
+      
+    connections:
+      description: "Conexões com outros documentos"
+      type: "object"
+      structure:
+        references: "Lista de documentos referenciados"
+        impacts: "Lista de documentos impactados"
+        depends_on: "Lista de dependências"
+        blocks: "Lista de documentos bloqueados"
+        relates_to: "Lista de documentos relacionados"
+      
+    created_date:
+      description: "Data de criação do documento"
+      type: "date"
+      format: "YYYY-MM-DD"
+      
+    last_updated:
+      description: "Data da última atualização"
+      type: "date"
+      format: "YYYY-MM-DD"
+
+  # Campos opcionais (EXTENSÍVEIS)
+  optional_fields:
+    title:
+      description: "Título do documento"
+      type: "string"
+      
+    module:
+      description: "Módulo específico do documento"
+      type: "string"
+      
+    priority:
+      description: "Prioridade do documento"
+      type: "string"
+      values: ["critical", "high", "medium", "low"]
+      
+    status:
+      description: "Status atual do documento"
+      type: "string"
+      values: ["draft", "review", "active", "deprecated", "archived"]
+      
+    owner:
+      description: "Responsável pelo documento"
+      type: "string"
+      
+    tags:
+      description: "Tags para categorização"
+      type: "array"
+      
+    complexity:
+      description: "Complexidade do documento"
+      type: "string"
+      values: ["low", "medium", "high", "critical"]
+      
+    maintenance_schedule:
+      description: "Frequência de revisão"
+      type: "string"
+      values: ["never", "monthly", "quarterly", "yearly"]
+
+# =============================================================================
+# TIPOS DE CONEXÕES ENTRE DOCUMENTOS
+# =============================================================================
+
+connection_types:
+  references:
+    name: "Referencia"
+    description: "Documento referencia outro documento"
+    direction: "outbound"
+    weight: "medium"
+    
+  impacts:
+    name: "Impacta"
+    description: "Documento impacta outro documento"
+    direction: "outbound"
+    weight: "high"
+    
+  depends_on:
+    name: "Depende de"
+    description: "Documento depende de outro documento"
+    direction: "inbound"
+    weight: "high"
+    
+  blocks:
+    name: "Bloqueia"
+    description: "Documento bloqueia outro documento"
+    direction: "outbound"
+    weight: "critical"
+    
+  relates_to:
+    name: "Relaciona com"
+    description: "Documento se relaciona com outro documento"
+    direction: "bidirectional"
+    weight: "low"
+
+# =============================================================================
+# REGRAS DE VALIDAÇÃO
+# =============================================================================
+
+validation_rules:
+  # Validação de metadados
+  metadata_validation:
+    required_fields_present: true
+    valid_doc_type: true
+    valid_context_level: true
+    valid_context_type: true
+    valid_dates: true
+    valid_connections: true
+    
+  # Validação de conexões
+  connection_validation:
+    no_self_references: true
+    no_circular_dependencies: true
+    valid_connection_targets: true
+    consistent_bidirectional: true
+    
+  # Validação de contexto
+  context_validation:
+    consistent_context_level: true
+    consistent_context_type: true
+    valid_context_hierarchy: true
+    
+  # Validação de template
+  template_validation:
+    correct_template_usage: true
+    required_sections_present: true
+    valid_front_matter: true
+    valid_inline_metadata: true
+
+# =============================================================================
+# DETECÇÃO DE CONFLITOS
+# =============================================================================
+
+conflict_detection:
+  duplicate_references:
+    enabled: true
+    description: "Mesmo componente referenciado diferentemente"
+    severity: "warning"
+    
+  circular_dependencies:
+    enabled: true
+    description: "Dependências circulares detectadas"
+    severity: "error"
+    
+  orphaned_documents:
+    enabled: true
+    description: "Documentos sem conexões"
+    severity: "info"
+    
+  broken_connections:
+    enabled: true
+    description: "Conexões para documentos inexistentes"
+    severity: "error"
+    
+  inconsistent_context:
+    enabled: true
+    description: "Contexto inconsistente entre documentos"
+    severity: "warning"
+    
+  outdated_documents:
+    enabled: true
+    description: "Documentos não atualizados há muito tempo"
+    severity: "info"
+    max_age_days: 90
+
+# =============================================================================
+# MAPEAMENTO DE RELACIONAMENTOS
+# =============================================================================
+
+relationship_mapping:
+  coupling_analysis:
+    strong_coupling:
+      threshold: 3
+      description: "Documentos com 3+ conexões diretas"
+      
+    weak_coupling:
+      threshold: 1
+      description: "Documentos com 1-2 conexões diretas"
+      
+  hierarchy_detection:
+    parent_child: true
+    sibling_relationships: true
+    cross_context_relationships: true
+    
+  pattern_recognition:
+    common_patterns: true
+    anti_patterns: true
+    architectural_patterns: true
+
+# =============================================================================
+# CONFIGURAÇÃO DO SCANNER
+# =============================================================================
+
+scanner:
+  # Diretórios para escaneamento
+  directories:
+    base_path: "context-navigator"
+    templates_path: "templates"
+    docs_path: "docs"
+    examples_path: "examples"
+    context_maps_path: ".context-map"
+    
+  # Padrões de arquivo
+  file_patterns:
+    markdown: "*.md"
+    yaml: "*.yml"
+    json: "*.json"
+    
+  # Configuração de parsing
+  parsing:
+    front_matter_delimiter: "---"
+    inline_metadata_pattern: "<!-- CONTEXT_META"
+    connection_patterns:
+      - "\\[([^\\]]+)\\]"
+      - "\\{\\{([^\\}]+)\\}\\}"
+      - "@([a-zA-Z0-9_-]+)"
+      
+  # Configuração de saída
+  output:
+    context_maps_format: "yaml"
+    validation_report_format: "json"
+    conflict_report_format: "markdown"
+
+# =============================================================================
+# CONFIGURAÇÃO DA IA
+# =============================================================================
+
+ai_configuration:
+  # Protocolo obrigatório
+  protocol:
+    always_load_context_rule: true
+    always_check_context_maps: true
+    always_validate_before_action: true
+    always_update_connections: true
+    
+  # Comportamento padrão
+  default_behavior:
+    follow_templates_strictly: true
+    maintain_metadata_consistency: true
+    detect_conflicts_automatically: true
+    suggest_improvements: true
+    
+  # Regras de atualização
+  update_rules:
+    auto_update_last_modified: true
+    auto_update_connections: true
+    auto_detect_context_changes: true
+    validate_after_updates: true
+
+# =============================================================================
+# CONFIGURAÇÃO DE EXPANSÃO
+# =============================================================================
+
+extensibility:
+  # Novos tipos de documento
+  new_document_types:
+    enabled: true
+    requires_template: true
+    requires_validation_rules: true
+    
+  # Novos contextos
+  new_contexts:
+    enabled: true
+    requires_detection_patterns: true
+    requires_validation_rules: true
+    
+  # Novos tipos de conexão
+  new_connection_types:
+    enabled: true
+    requires_validation_rules: true
+    
+  # Customização de templates
+  template_customization:
+    enabled: true
+    preserve_required_metadata: true
+    validate_structure: true
+
+# =============================================================================
+# MÉTRICAS E MONITORAMENTO
+# =============================================================================
+
+metrics:
+  # Métricas de qualidade
+  quality_metrics:
+    metadata_completeness: true
+    connection_accuracy: true
+    context_consistency: true
+    template_compliance: true
+    
+  # Métricas de uso
+  usage_metrics:
+    document_type_distribution: true
+    context_usage_patterns: true
+    connection_patterns: true
+    update_frequency: true
+    
+  # Métricas de eficiência
+  efficiency_metrics:
+    scan_time: true
+    validation_time: true
+    conflict_resolution_time: true
+    context_switch_time: true
+
+# =============================================================================
+# VERSIONAMENTO
+# =============================================================================
+
+versioning:
+  schema_version: "1.0.0"
+  backward_compatibility: true
+  migration_support: true
+  changelog_required: true
+  
+  breaking_changes:
+    require_approval: true
+    require_migration_plan: true
+    require_documentation_update: true
+
+# =============================================================================
+# CONFIGURAÇÃO DE DESENVOLVIMENTO
+# =============================================================================
+
+development:
+  # Modo debug
+  debug_mode: false
+  verbose_logging: false
+  
+  # Validação estrita
+  strict_validation: true
+  fail_on_warnings: false
+  
+  # Testes
+  run_tests: true
+  test_coverage_required: 90
+  
+  # Backup
+  backup_before_changes: true
+  backup_retention_days: 30
+
+# =============================================================================
+# CONFIGURAÇÃO DE PRODUÇÃO
+# =============================================================================
+
+production:
+  # Performance
+  parallel_processing: true
+  cache_enabled: true
+  cache_ttl_minutes: 60
+  
+  # Segurança
+  validate_input: true
+  sanitize_output: true
+  
+  # Monitoramento
+  health_checks: true
+  performance_monitoring: true
+  error_tracking: true
+
+# =============================================================================
+# DOCUMENTAÇÃO E AJUDA
+# =============================================================================
+
+help:
+  # Documentação
+  user_manual: "docs/MANUAL_HUMANO.md"
+  ai_manual: "docs/MANUAL_IA.md"
+  conventions: "docs/CONVENTIONS.md"
+  
+  # Exemplos
+  example_documents: "examples/"
+  template_examples: "templates/"
+  
+  # Suporte
+  troubleshooting: "docs/TROUBLESHOOTING.md"
+  faq: "docs/FAQ.md"
+  changelog: "docs/CHANGELOG.md"
+
+# =============================================================================
+# CONFIGURAÇÃO FINAL
+# =============================================================================
+
+# Checksum para validação de integridade
+checksum: "context-navigator-v1.0.0-foundation"
+
+# Data de última modificação
+last_modified: "2024-01-15T10:00:00Z"
+
+# Assinatura da configuração
+signature: "context-navigator-foundation-config" 
