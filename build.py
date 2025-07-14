@@ -25,15 +25,22 @@ class ContextNavigatorBuilder:
             version: Versão do build (se não especificada, usa timestamp)
         """
         self.source_dir = Path(source_dir).resolve()
+        self.src_dir = self.source_dir / "src" / "context_navigator"
         self.version = version or "1.0.8"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         
         print(f"🏗️  Context Navigator Builder")
         print(f"📁 Fonte: {self.source_dir}")
+        print(f"📦 Pacote: {self.src_dir}")
         print(f"🏷️  Versão: {self.version}")
         print(f"📦 Build: {self.build_dir}")
         print(f"📤 Distribuição: {self.dist_dir}")
+        
+        # Verificar se estrutura src/ existe
+        if not self.src_dir.exists():
+            print(f"❌ Estrutura src/ não encontrada em: {self.src_dir}")
+            raise FileNotFoundError(f"Estrutura src/ não encontrada: {self.src_dir}")
         
     def clean_build_dirs(self) -> bool:
         """Remove diretórios de build e dist anteriores"""
@@ -75,22 +82,67 @@ class ContextNavigatorBuilder:
         """Copia arquivos fonte para o build"""
         print(f"\n📋 Copiando arquivos fonte...")
         
-        # Arquivos e diretórios para incluir no pacote
-        files_to_include = [
-            "scripts/",
-            "templates/",
-            "docs/",
-            "examples/",
-            "context.rule",
-            ".contextrc",
-            "README.md",
-            "QUICK_START.md", 
-            "GUIA_IMPLEMENTACAO.md",
-            "install.py"
-        ]
+        # CORREÇÃO: Criar estrutura mínima sem duplicação
+        # Pacote deve conter apenas:
+        # - install.py (raiz)
+        # - source/ (pasta com arquivos a serem instalados)
+        # - docs/ (documentação do projeto)
+        # - README.md, etc. (arquivos informativos)
         
         try:
-            for item in files_to_include:
+            # 1. Copiar install.py para a raiz do pacote
+            install_source = self.src_dir / "installer" / "install.py"
+            install_dest = self.package_dir / "install.py"
+            
+            if install_source.exists():
+                shutil.copy2(install_source, install_dest)
+                print(f"✅ Copiado: installer/install.py -> install.py")
+            else:
+                print(f"⚠️  install.py não encontrado em: {install_source}")
+                return False
+            
+            # 2. Criar pasta source/ com arquivos a serem instalados
+            source_dest = self.package_dir / "source"
+            source_dest.mkdir(exist_ok=True)
+            
+            # Arquivos e diretórios para incluir em source/ (de src/context_navigator/)
+            src_files_to_include = [
+                "scripts/",
+                "templates/",
+                "core/",
+                "context.rule",
+                ".contextrc",
+                "__init__.py",
+                "cn_cli.py"
+            ]
+            
+            for item in src_files_to_include:
+                source_path = self.src_dir / item
+                dest_path = source_dest / item
+                
+                if not source_path.exists():
+                    print(f"⚠️  Arquivo não encontrado: src/context_navigator/{item}")
+                    continue
+                    
+                if source_path.is_dir():
+                    shutil.copytree(source_path, dest_path)
+                    print(f"✅ Copiado: src/context_navigator/{item} -> source/{item}")
+                else:
+                    dest_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source_path, dest_path)
+                    print(f"✅ Copiado: src/context_navigator/{item} -> source/{item}")
+            
+            # 3. Copiar arquivos informativos do root do projeto para a raiz do pacote
+            root_files_to_include = [
+                "docs/",
+                "examples/", 
+                "README.md",
+                "QUICK_START.md",
+                "INSTALL.md",
+                "LICENSE"
+            ]
+            
+            for item in root_files_to_include:
                 source_path = self.source_dir / item
                 dest_path = self.package_dir / item
                 
@@ -157,39 +209,86 @@ class ContextNavigatorBuilder:
 
 ## 🚀 Instalação Rápida
 
+### 📁 Instalação Local (Padrão)
 ```bash
 # 1. Extrair o pacote
 tar -xzf context-navigator-{self.version}.tar.gz
 cd context-navigator-{self.version}
 
-# 2. Instalar
+# 2. Instalar localmente
 python3 install.py
 
 # 3. Testar
-./cn demo
+python3 -m context_navigator.cn_cli demo
+```
+
+### 🌐 Instalação Global (Recomendada)
+```bash
+# 1. Extrair o pacote
+tar -xzf context-navigator-{self.version}.tar.gz
+cd context-navigator-{self.version}
+
+# 2. Instalar globalmente
+python3 install.py --global
+
+# 3. Configurar PATH (adicione ao ~/.bashrc)
+export PATH="$HOME/.local/bin:$PATH"
+
+# 4. Testar de qualquer diretório
+cn demo
 ```
 
 ## 📋 Comandos Principais
 
+### 🌐 Instalação Global
 ```bash
-./cn scan                    # Escanear documentos
-./cn demo                    # Demonstração completa
-./cn validate                # Validar métricas
-./cn new decision nome       # Criar nova decisão
-./cn help                    # Ver todos os comandos
+cn scan                      # Escanear documentos
+cn demo                      # Demonstração completa
+cn validate                  # Validar métricas
+cn new decision nome         # Criar nova decisão
+cn help                      # Ver todos os comandos
 ```
+
+### 📁 Instalação Local
+```bash
+python3 -m context_navigator.cn_cli scan
+python3 -m context_navigator.cn_cli demo
+python3 -m context_navigator.cn_cli validate
+python3 -m context_navigator.cn_cli new decision nome
+python3 -m context_navigator.cn_cli help
+```
+
+## 🎯 Opções de Instalação
+
+### 🌐 Global (Recomendada)
+- **Comando**: `python3 install.py --global`
+- **Localização**: `~/.local/share/context-navigator/`
+- **Launcher**: `~/.local/bin/cn`
+- **Uso**: `cn comando` de qualquer diretório
+
+### 📁 Local
+- **Comando**: `python3 install.py`
+- **Localização**: `.context-navigator/`
+- **Uso**: `python3 -m context_navigator.cn_cli comando`
+
+## 🔍 Busca Inteligente
+
+O Context Navigator agora busca automaticamente por `.context-navigator/`:
+- No diretório atual
+- Em diretórios pais
+- Permite usar de subdiretórios do projeto
 
 ## 🎯 Sistema Instalado
 
 - **`.context-navigator/`** - Sistema completo isolado
 - **`.context-map/`** - Dados gerados pelo sistema
-- **`cn`** - Launcher principal
+- **`cn`** - Launcher global (instalação global)
 
 ## 📚 Documentação
 
 - `README.md` - Documentação completa
 - `QUICK_START.md` - Guia de 15 minutos
-- `GUIA_IMPLEMENTACAO.md` - Guia de implementação
+- `INSTALL.md` - Guia de instalação
 - `docs/` - Documentação técnica detalhada
 
 ## 🔧 Requisitos
@@ -515,27 +614,58 @@ echo "🧹 Limpando arquivos temporários..."
         print(f"\n🔍 Validando build...")
         
         try:
-            # Verificar arquivos essenciais
-            essential_files = [
+            # Verificar arquivos essenciais na raiz do pacote
+            root_files = [
                 "install.py",
-                "scripts/context_scanner.py",
-                "templates/decisao.md",
-                "context.rule",
-                ".contextrc",
-                "README.md"
+                "README.md",
+                "QUICK_START.md",
+                "INSTALL.md"
             ]
             
-            for file in essential_files:
+            for file in root_files:
                 file_path = self.package_dir / file
                 if not file_path.exists():
                     print(f"❌ Arquivo essencial não encontrado: {file}")
                     return False
                 print(f"✅ Validado: {file}")
-                
-            # Verificar estrutura de diretórios
-            essential_dirs = ["scripts", "templates", "docs", "examples"]
             
-            for dir_name in essential_dirs:
+            # Verificar pasta source/ existe
+            source_dir = self.package_dir / "source"
+            if not source_dir.exists():
+                print(f"❌ Pasta source/ não encontrada")
+                return False
+            print(f"✅ Validado: source/")
+            
+            # Verificar arquivos essenciais em source/
+            source_files = [
+                "scripts/context_scanner.py",
+                "templates/decisao.md",
+                "context.rule",
+                ".contextrc",
+                "cn_cli.py"
+            ]
+            
+            for file in source_files:
+                file_path = source_dir / file
+                if not file_path.exists():
+                    print(f"❌ Arquivo essencial não encontrado: source/{file}")
+                    return False
+                print(f"✅ Validado: source/{file}")
+                
+            # Verificar estrutura de diretórios em source/
+            source_dirs = ["scripts", "templates"]
+            
+            for dir_name in source_dirs:
+                dir_path = source_dir / dir_name
+                if not dir_path.is_dir():
+                    print(f"❌ Diretório essencial não encontrado: source/{dir_name}")
+                    return False
+                print(f"✅ Validado: source/{dir_name}/")
+                
+            # Verificar estrutura de diretórios na raiz
+            root_dirs = ["docs", "examples"]
+            
+            for dir_name in root_dirs:
                 dir_path = self.package_dir / dir_name
                 if not dir_path.is_dir():
                     print(f"❌ Diretório essencial não encontrado: {dir_name}")

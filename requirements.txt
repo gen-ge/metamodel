@@ -1,0 +1,14 @@
+# Context Navigator - Dependências
+# NOTA: O Context Navigator usa apenas bibliotecas padrão do Python
+# Este arquivo existe para casos específicos onde pyyaml não está disponível
+
+# Dependência opcional para leitura de YAML
+# (A maioria das distribuições Python já inclui pyyaml)
+pyyaml>=5.4.0
+
+# DESENVOLVIMENTO APENAS:
+# Se você está desenvolvendo o Context Navigator, instale com:
+# pip install -r requirements.txt
+# 
+# Para usuários finais: NENHUMA dependência externa é necessária!
+# O Context Navigator funciona apenas com Python padrão. 
