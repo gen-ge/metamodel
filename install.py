@@ -259,7 +259,7 @@ def run_script(script_name, args=None):
     script_path = cn_dir / "scripts" / f"{{script_name}}.py"
     
     if not script_path.exists():
-        print(f"❌ Script não encontrado: {{script_name}}")
+        print("❌ Script não encontrado: " + script_name)
         return 1
         
     # Executar script
@@ -270,7 +270,7 @@ def run_script(script_name, args=None):
     try:
         return subprocess.run(cmd, cwd=Path.cwd()).returncode
     except Exception as e:
-        print(f"❌ Erro ao executar script: {{e}}")
+        print("❌ Erro ao executar script: " + str(e))
         return 1
 
 def create_document(doc_type, name=None):
@@ -296,7 +296,7 @@ def create_document(doc_type, name=None):
     template_path = cn_dir / "templates" / f"{{template_name}}.md"
     
     if not template_path.exists():
-        print(f"❌ Template não encontrado: {{doc_type}}")
+        print("❌ Template não encontrado: " + doc_type)
         return 1
         
     # Determinar nome do arquivo
@@ -310,20 +310,33 @@ def create_document(doc_type, name=None):
         import shutil
         from datetime import datetime
         
-        # Criar pasta docs/ se não existir
+        # Verificar se pasta docs/ existe
         docs_path = Path("docs")
-        docs_path.mkdir(exist_ok=True)
+        if not docs_path.exists():
+            print("📁 A pasta 'docs/' não existe no seu projeto.")
+            print("💡 Deseja criar a pasta 'docs/' agora? (s/N): ", end="")
+            try:
+                response = input().lower().strip()
+                if response in ['s', 'sim', 'y', 'yes']:
+                    docs_path.mkdir(exist_ok=True)
+                    print("✅ Pasta 'docs/' criada!")
+                else:
+                    print("❌ Documento não foi criado. Execute 'mkdir docs' primeiro.")
+                    return 1
+            except (KeyboardInterrupt, EOFError):
+                print("\\n❌ Operação cancelada pelo usuário.")
+                return 1
         
         # Caminho completo do arquivo
         full_path = docs_path / filename
         
         shutil.copy2(template_path, full_path)
-        print(f"✅ Documento criado: {{full_path}}")
-        print(f"📝 Edite o arquivo e preencha os metadados obrigatórios")
-        print(f"🔍 Depois execute: cn scan")
+        print("✅ Documento criado: " + str(full_path))
+        print("📝 Edite o arquivo e preencha os metadados obrigatórios")
+        print("🔍 Depois execute: cn scan")
         return 0
     except Exception as e:
-        print(f"❌ Erro ao criar documento: {{e}}")
+        print("❌ Erro ao criar documento: " + str(e))
         return 1
 
 def setup_workspace():
@@ -337,11 +350,41 @@ def setup_workspace():
     print("🚀 Inicializando workspace do Context Navigator...")
     
     try:
-        # Criar estrutura de pastas
-        folders = ["docs", "templates", "examples", ".context-map"]
-        for folder in folders:
-            Path(folder).mkdir(exist_ok=True)
-            print(f"✅ Criada pasta: {{folder}}/")
+        # Verificar e perguntar sobre estrutura de pastas
+        print("📋 O Context Navigator pode criar pastas opcionais no seu projeto:")
+        print("   • docs/        → Para seus documentos")
+        print("   • templates/   → Templates personalizados (opcional)")
+        print("   • examples/    → Exemplos de documentos (opcional)")
+        print("")
+        
+        # Sempre criar .context-map (necessário para funcionamento)
+        context_map_path = Path(".context-map")
+        if not context_map_path.exists():
+            context_map_path.mkdir(exist_ok=True)
+            print("✅ Criada pasta obrigatória: .context-map/")
+        
+        # Perguntar sobre pastas opcionais
+        optional_folders = {{
+            "docs": "Para armazenar seus documentos",
+            "templates": "Para templates personalizados (opcional)", 
+            "examples": "Para exemplos de documentos (opcional)"
+        }}
+        
+        for folder, description in optional_folders.items():
+            folder_path = Path(folder)
+            if not folder_path.exists():
+                print(f"💡 Criar pasta '{{folder}}/'? {{description}} (s/N): ", end="")
+                try:
+                    response = input().lower().strip()
+                    if response in ['s', 'sim', 'y', 'yes']:
+                        folder_path.mkdir(exist_ok=True)
+                        print(f"✅ Criada pasta: {{folder}}/")
+                    else:
+                        print(f"⏭️  Pasta '{{folder}}/' não criada (você pode criar depois se precisar)")
+                except (KeyboardInterrupt, EOFError):
+                    print(f"\\n⏭️  Pulando criação de '{{folder}}/'")
+            else:
+                print(f"✅ Pasta '{{folder}}/' já existe")
         
         # Copiar .contextrc se não existir
         contextrc_path = Path(".contextrc")
@@ -350,7 +393,7 @@ def setup_workspace():
             if source_contextrc.exists():
                 import shutil
                 shutil.copy2(source_contextrc, contextrc_path)
-                print(f"✅ Copiado arquivo de configuração: .contextrc")
+                print("✅ Copiado arquivo de configuração: .contextrc")
         
         print("\\n🎉 Workspace inicializado com sucesso!")
         print("\\n🚀 PRÓXIMOS PASSOS:")
@@ -360,7 +403,7 @@ def setup_workspace():
         
         return 0
     except Exception as e:
-        print(f"❌ Erro ao inicializar workspace: {{e}}")
+        print("❌ Erro ao inicializar workspace: " + str(e))
         return 1
 
 def show_status():
@@ -377,10 +420,10 @@ def show_status():
         with open(version_file, 'r') as f:
             version_info = json.load(f)
             
-        print(f"✅ Context Navigator v{{version_info['version']}}")
-        print(f"📁 Instalado em: {{cn_dir}}")
-        print(f"📅 Instalado em: {{version_info['installed_at']}}")
-        print(f"🐍 Python: {{version_info['python_version']}}")
+        print("✅ Context Navigator v" + version_info['version'])
+        print("📁 Instalado em: " + str(cn_dir))
+        print("📅 Instalado em: " + version_info['installed_at'])
+        print("🐍 Python: " + version_info['python_version'])
     else:
         print("⚠️  Informações de versão não encontradas")
         
@@ -438,7 +481,7 @@ def main():
     elif command == "status":
         return show_status()
     else:
-        print(f"❌ Comando não reconhecido: {{command}}")
+        print("❌ Comando não reconhecido: " + command)
         print("💡 Execute 'cn help' para ver comandos disponíveis")
         return 1
 

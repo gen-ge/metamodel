@@ -41,11 +41,14 @@ class ContextScanner:
         # Carregar configuração
         self._load_config()
         
-        # Configurar caminhos
-        self.docs_path = self.base_path / "docs"
-        self.templates_path = self.base_path / "templates"
-        self.context_maps_path = self.base_path / ".context-map"
-        self.examples_path = self.base_path / "examples"
+        # Configurar caminhos usando configuração do .contextrc
+        scanner_config = self.config.get('scanner', {}).get('directories', {})
+        
+        # Usar configuração do .contextrc ou valores padrão
+        self.docs_path = self.base_path / scanner_config.get('docs_path', 'docs')
+        self.templates_path = self.base_path / scanner_config.get('templates_path', 'templates')
+        self.context_maps_path = self.base_path / scanner_config.get('context_maps_path', '.context-map')
+        self.examples_path = self.base_path / scanner_config.get('examples_path', 'examples')
         
         # Criar diretórios se necessário
         self.context_maps_path.mkdir(exist_ok=True)

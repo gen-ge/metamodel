@@ -90,22 +90,36 @@ class ContextEngine:
         
     def _load_config(self) -> None:
         """Carrega configuração do .contextrc"""
-        config_file = self.base_path / ".contextrc"
+        # Procurar .contextrc em múltiplas localizações
+        config_locations = [
+            self.base_path / ".contextrc",  # Raiz do workspace
+            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
+        ]
         
-        if not config_file.exists():
-            logger.error(f"Arquivo .contextrc não encontrado em {config_file}")
+        config_file = None
+        for location in config_locations:
+            if location.exists():
+                config_file = location
+                break
+        
+        if not config_file:
+            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
+            for location in config_locations:
+                logger.error(f"  - {location}")
             return
             
         try:
             with open(config_file, 'r', encoding='utf-8') as f:
                 self.config = yaml.safe_load(f)
-            logger.info("Configuração carregada com sucesso")
+            logger.info(f"Configuração carregada com sucesso de {config_file}")
         except Exception as e:
             logger.error(f"Erro ao carregar configuração: {e}")
             
     def _load_context_maps(self) -> None:
         """Carrega mapas de contexto existentes"""
-        context_maps_path = self.base_path / ".context-map"
+        # Usar configuração do .contextrc
+        scanner_config = self.config.get('scanner', {}).get('directories', {})
+        context_maps_path = self.base_path / scanner_config.get('context_maps_path', '.context-map')
         
         if not context_maps_path.exists():
             logger.warning("Mapas de contexto não encontrados")
@@ -219,7 +233,7 @@ class ContextEngine:
                 score += content_lower.count(entity.lower())
             purpose_scores[template_type] = score
             
-        purpose = max(purpose_scores, key=purpose_scores.get) if purpose_scores else 'unknown'
+        purpose = max(purpose_scores.keys(), key=lambda x: purpose_scores[x]) if purpose_scores else 'unknown'
         confidence = purpose_scores.get(purpose, 0) / 10.0
         confidence = min(confidence, 1.0)
         
@@ -229,7 +243,7 @@ class ContextEngine:
             score = sum(content_lower.count(keyword) for keyword in keywords)
             domain_scores[context_type] = score
             
-        domain = max(domain_scores, key=domain_scores.get) if domain_scores else 'core'
+        domain = max(domain_scores.keys(), key=lambda x: domain_scores[x]) if domain_scores else 'core'
         
         return ContentAnalysis(
             keywords=keywords[:10],  # Top 10 keywords
@@ -240,7 +254,7 @@ class ContextEngine:
             confidence=confidence
         )
         
-    def recommend_template(self, content: str, metadata: Dict[str, Any] = None) -> TemplateRecommendation:
+    def recommend_template(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> TemplateRecommendation:
         """
         Recomenda template baseado no conteúdo
         
@@ -323,7 +337,7 @@ class ContextEngine:
             alternative_templates=alternatives
         )
         
-    def recommend_context(self, content: str, file_path: str, metadata: Dict[str, Any] = None) -> ContextRecommendation:
+    def recommend_context(self, content: str, file_path: str, metadata: Optional[Dict[str, Any]] = None) -> ContextRecommendation:
         """
         Recomenda contexto baseado no conteúdo e localização
         

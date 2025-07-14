@@ -62,8 +62,6 @@ class ContextAdvisor:
     
     def __init__(self, base_path: str = "."):
         self.base_path = Path(base_path)
-        self.config_path = self.base_path / ".contextrc"
-        self.context_maps_path = self.base_path / ".context-map"
         
         self.config = {}
         self.context_maps = {}
@@ -71,19 +69,44 @@ class ContextAdvisor:
         self.pattern_cache = {}
         
         self._load_config()
+        self._init_paths()
         self._load_context_maps()
         self._load_document_cache()
         self._initialize_pattern_analysis()
         
     def _load_config(self) -> None:
         """Carrega configuração do .contextrc"""
+        # Procurar .contextrc em múltiplas localizações
+        config_locations = [
+            self.base_path / ".contextrc",  # Raiz do workspace
+            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
+        ]
+        
+        config_file = None
+        for location in config_locations:
+            if location.exists():
+                config_file = location
+                break
+        
+        if not config_file:
+            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
+            for location in config_locations:
+                logger.error(f"  - {location}")
+            self.config = {}
+            return
+            
         try:
-            with open(self.config_path, 'r', encoding='utf-8') as f:
+            with open(config_file, 'r', encoding='utf-8') as f:
                 self.config = yaml.safe_load(f) or {}
-            logger.info("Configuração carregada com sucesso")
+            logger.info(f"Configuração carregada com sucesso de {config_file}")
         except Exception as e:
             logger.error(f"Erro ao carregar configuração: {e}")
             self.config = {}
+            
+    def _init_paths(self) -> None:
+        """Inicializa paths baseado na configuração"""
+        scanner_config = self.config.get('scanner', {}).get('directories', {})
+        self.context_maps_path = self.base_path / scanner_config.get('context_maps_path', '.context-map')
             
     def _load_context_maps(self) -> None:
         """Carrega mapas de contexto gerados pelo scanner"""

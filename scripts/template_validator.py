@@ -75,16 +75,28 @@ class TemplateValidator:
         
     def _load_config(self) -> None:
         """Carrega configuração do .contextrc"""
-        config_file = self.base_path / ".contextrc"
+        # Procurar .contextrc em múltiplas localizações
+        config_locations = [
+            self.base_path / ".contextrc",  # Raiz do workspace
+            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
+        ]
         
-        if not config_file.exists():
-            logger.error(f"Arquivo .contextrc não encontrado em {config_file}")
+        config_file = None
+        for location in config_locations:
+            if location.exists():
+                config_file = location
+                break
+        
+        if not config_file:
+            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
+            for location in config_locations:
+                logger.error(f"  - {location}")
             return
             
         try:
             with open(config_file, 'r', encoding='utf-8') as f:
                 self.config = yaml.safe_load(f)
-            logger.info("Configuração carregada com sucesso")
+            logger.info(f"Configuração carregada com sucesso de {config_file}")
         except Exception as e:
             logger.error(f"Erro ao carregar configuração: {e}")
             

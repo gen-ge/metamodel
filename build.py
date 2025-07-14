@@ -25,7 +25,7 @@ class ContextNavigatorBuilder:
             version: Versão do build (se não especificada, usa timestamp)
         """
         self.source_dir = Path(source_dir).resolve()
-        self.version = version or "1.0.7"
+        self.version = version or "1.0.8"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         
@@ -356,34 +356,118 @@ if __name__ == "__main__":
 # Context Navigator - Instalador Shell v{self.version}
 # Download e instalação automática do Context Navigator
 
+set -e  # Sair em caso de erro
+
 echo "🚀 Context Navigator - Instalador v{self.version}"
 echo "📥 Baixando e instalando..."
+
+# Verificar dependências
+check_dependencies() {{
+    echo "🔍 Verificando dependências..."
+    
+    # Verificar Python 3
+    if ! command -v python3 &> /dev/null; then
+        echo "❌ Python 3 não encontrado. Instale Python 3.7+ para continuar."
+        exit 1
+    fi
+    
+    # Verificar versão do Python
+    python_version=$(python3 -c "import sys; print(f'{{sys.version_info.major}}.{{sys.version_info.minor}}')")
+    if ! python3 -c "import sys; sys.exit(0 if sys.version_info >= (3, 7) else 1)"; then
+        echo "❌ Python 3.7+ requerido. Versão atual: $python_version"
+        exit 1
+    fi
+    
+    # Verificar ferramenta de download
+    if command -v wget &> /dev/null; then
+        DOWNLOAD_CMD="wget -q"
+    elif command -v curl &> /dev/null; then
+        DOWNLOAD_CMD="curl -sL -o"
+    else
+        echo "❌ Nem wget nem curl encontrados. Instale uma dessas ferramentas."
+        exit 1
+    fi
+    
+    # Verificar tar
+    if ! command -v tar &> /dev/null; then
+        echo "❌ tar não encontrado. Instale tar para continuar."
+        exit 1
+    fi
+    
+    echo "✅ Dependências verificadas"
+}}
+
+# Função de limpeza
+cleanup() {{
+    if [ -n "$temp_dir" ] && [ -d "$temp_dir" ]; then
+        echo "🧹 Limpando diretório temporário..."
+        rm -rf "$temp_dir"
+    fi
+}}
+
+# Configurar trap para limpeza em caso de interrupção
+trap cleanup EXIT INT TERM
+
+# Verificar dependências
+check_dependencies
+
+# Verificar permissões no diretório atual
+if [ ! -w "." ]; then
+    echo "❌ Sem permissão de escrita no diretório atual"
+    exit 1
+fi
 
 # Salvar workspace original
 original_dir=$(pwd)
 
 # Criar diretório temporário
 temp_dir=$(mktemp -d)
+echo "📁 Diretório temporário: $temp_dir"
 cd "$temp_dir"
+
+# URL do pacote
+PACKAGE_URL="https://github.com/gen-ge/metamodel/releases/latest/download/context-navigator-latest.tar.gz"
+PACKAGE_FILE="context-navigator-latest.tar.gz"
 
 # Baixar pacote
 echo "📥 Baixando pacote..."
-wget -q https://github.com/gen-ge/metamodel/releases/latest/download/context-navigator-latest.tar.gz
+if command -v wget &> /dev/null; then
+    wget -q "$PACKAGE_URL" -O "$PACKAGE_FILE"
+else
+    curl -sL "$PACKAGE_URL" -o "$PACKAGE_FILE"
+fi
 
 if [ $? -ne 0 ]; then
-    echo "❌ Erro ao baixar pacote"
+    echo "❌ Erro ao baixar pacote. Verifique sua conexão com a internet."
+    exit 1
+fi
+
+# Verificar se o arquivo foi baixado
+if [ ! -f "$PACKAGE_FILE" ]; then
+    echo "❌ Arquivo não foi baixado corretamente"
     exit 1
 fi
 
 # Extrair pacote
 echo "📦 Extraindo pacote..."
-tar -xzf context-navigator-latest.tar.gz
+tar -xzf "$PACKAGE_FILE"
+
+if [ $? -ne 0 ]; then
+    echo "❌ Erro ao extrair pacote"
+    exit 1
+fi
 
 # Encontrar diretório extraído
 extracted_dir=$(find . -name "context-navigator-*" -type d | head -1)
 
 if [ -z "$extracted_dir" ]; then
     echo "❌ Diretório extraído não encontrado"
+    exit 1
+fi
+
+# Verificar se install.py existe
+if [ ! -f "$extracted_dir/install.py" ]; then
+    echo "❌ Script de instalação não encontrado no pacote"
     exit 1
 fi
 
@@ -395,14 +479,20 @@ python3 install.py --target "$original_dir"
 if [ $? -eq 0 ]; then
     echo "✅ Instalação concluída!"
     echo "💡 Execute './cn help' para começar"
+    
+    # Verificar se o launcher foi criado
+    if [ -f "$original_dir/cn" ]; then
+        echo "🎯 Launcher criado em: $original_dir/cn"
+    else
+        echo "⚠️  Launcher não encontrado. Verifique a instalação."
+    fi
 else
     echo "❌ Falha na instalação"
     exit 1
 fi
 
-# Limpar diretório temporário
-cd /
-rm -rf "$temp_dir"
+# A limpeza será feita automaticamente pelo trap
+echo "🧹 Limpando arquivos temporários..."
 '''
             
             # Criar script shell
