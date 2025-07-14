@@ -1,30 +1,3 @@
-# 🧭 Context Navigator - .gitignore
-# Arquivo que define o que deve ser ignorado pelo Git
-
-# =============================================================================
-# BUILD E DISTRIBUIÇÃO
-# =============================================================================
-
-# Diretórios de build
-build/
-dist/
-*.egg-info/
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Arquivos de build
-*.so
-*.egg
-*.whl
-.Python
-pip-wheel-metadata/
-share/python-wheels/
-
-# =============================================================================
-# PYTHON TEMPORÁRIOS
-# =============================================================================
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -47,220 +20,120 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 *.manifest
 *.spec
 
-# =============================================================================
-# CONTEXT NAVIGATOR ESPECÍFICO
-# =============================================================================
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Diretório de mapas de contexto (dados gerados)
-.context-map/
-
-# Arquivos de backup de instalação
-.context-navigator-backup-*/
-
-# Arquivos de métricas temporárias
-metrics_temp_*.json
-validation_temp_*.json
-
-# Arquivos de log do sistema
-*.log
-logs/
-
-# Arquivos de cache de padrões
-patterns_cache_*.json
-
-# Arquivos de teste temporários
-test_*.md
-exemplo_temp_*.md
-
-# =============================================================================
-# ARQUIVOS DE SISTEMA
-# =============================================================================
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon?
-._*
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msm
-*.msp
-*.lnk
-
-# Linux
-*~
-.fuse_hidden*
-.directory
-.Trash-*
-.nfs*
-
-# =============================================================================
-# EDITORES E IDEs
-# =============================================================================
-
-# VSCode
-.vscode/
-*.code-workspace
-
-# PyCharm
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# Vim
-*.swp
-*.swo
-*~
-.netrwhist
-
-# Emacs
-*~
-\#*\#
-/.emacs.desktop
-/.emacs.desktop.lock
-*.elc
-auto-save-list
-tramp
-.\#*
-
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
-
-# Atom
-.atom/
-
-# =============================================================================
-# AMBIENTES E CONFIGURAÇÕES
-# =============================================================================
-
-# Ambientes virtuais Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-.env
-.venv
-
-# Arquivos de configuração local
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-config.local.yml
-settings.local.json
-
-# =============================================================================
-# TEMPORÁRIOS E CACHE
-# =============================================================================
-
-# Arquivos temporários
-*.tmp
-*.temp
-*.swp
-*.bak
-*.backup
-*~
-
-# Cache
-.cache/
-.pytest_cache/
-.coverage
+# Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
 .coverage
 .coverage.*
+.cache
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
+.pytest_cache/
 
-# =============================================================================
-# DOCUMENTAÇÃO TEMPORÁRIA
-# =============================================================================
+# Translations
+*.mo
+*.pot
 
-# Arquivos de documentação temporários
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
 docs/_build/
-docs/build/
-site/
-.docs/
 
+# PyBuilder
+target/
 
-# Jupyter Notebooks
+# Jupyter Notebook
 .ipynb_checkpoints
 
-# =============================================================================
-# ARQUIVOS ESPECÍFICOS DO PROJETO
-# =============================================================================
+# IPython
+profile_default/
+ipython_config.py
 
-# Arquivos de sessão específicos (manter como exemplo)
-# RESUMO_SESSAO_2025-07-12.md
-# metrics_final_2025-07-12.json
+# pyenv
+.python-version
 
-# Arquivos de tarefas temporárias
-TAREFAS_TEMPORARIAS.md
-TODO_TEMP.md
+# pipenv
+Pipfile.lock
 
-# Arquivos de teste de instalação
-test_workspace/
-teste_instalacao/
+# PEP 582
+__pypackages__/
 
-# =============================================================================
-# ARQUIVOS DE DESENVOLVIMENTO
-# =============================================================================
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
 
-# Arquivos de debug
-debug.log
-*.debug
+# SageMath parsed files
+*.sage.py
 
-# Arquivos de profiling
-*.prof
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Arquivos de desenvolvimento local
-dev_*.py
-test_local_*.py
-scratch_*.py
+# Spyder project settings
+.spyderproject
+.spyproject
 
-# =============================================================================
-# COMENTÁRIOS IMPORTANTES
-# =============================================================================
+# Rope project settings
+.ropeproject
 
-# MANTIDOS NO GIT (não ignorar):
-# - .contextrc (configuração principal)
-# - context.rule (regras para IA)
-# - templates/ (templates de documentos)
-# - scripts/ (scripts funcionais)
-# - docs/ (documentação oficial)
-# - examples/ (exemplos oficiais)
-# - README.md, QUICK_START.md, etc. (documentação principal)
+# mkdocs documentation
+/site
 
-# IGNORADOS:
-# - .context-map/ (dados gerados pelo sistema)
-# - build/, dist/ (arquivos de build)
-# - Arquivos temporários e de cache
-# - Configurações locais de desenvolvimento 
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Context Navigator específico
+.context-navigator/
+.context-map/
+*-backup-*/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db 
