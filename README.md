@@ -77,7 +77,7 @@ cn demo
 
 ## 🤝 Contribuindo
 
-Contribuições são bem-vindas! Veja [CONTRIBUTING.md](CONTRIBUTING.md) para começar.
+Contribuições são bem-vindas! Abra uma [issue](https://github.com/gen-ge/metamodel/issues) ou envie um pull request.
 
 ## 📄 Licença
 
