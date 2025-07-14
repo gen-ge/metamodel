@@ -359,7 +359,7 @@ scanner:
     templates_path: "templates"
     docs_path: "docs"
     examples_path: "examples"
-    context_maps_path: "context-map"
+    context_maps_path: ".context-navigator/context-map"
 
   # Padrões de arquivo
   file_patterns:

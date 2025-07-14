@@ -219,28 +219,14 @@ class ContextNavigatorInstaller:
             return False
             
     def create_context_map_directory(self) -> bool:
-        """Cria diretório .context-map no workspace"""
+        """Cria diretório de contexto interno (não cria pasta externa)"""
         try:
-            context_map_dir = self.target_path / ".context-map"
-            context_map_dir.mkdir(exist_ok=True)
-            
-            # Criar arquivo inicial vazio
-            index_file = context_map_dir / "index.yml"
-            if not index_file.exists():
-                initial_content = {
-                    "version": self.version,
-                    "created_at": datetime.now().isoformat(),
-                    "documents": {},
-                    "connections": {},
-                    "last_scan": None
-                }
-                with open(index_file, 'w', encoding='utf-8') as f:
-                    yaml.dump(initial_content, f, default_flow_style=False, allow_unicode=True)
-                    
-            print(f"✅ Diretório de contexto criado: .context-map/")
+            # O diretório .context-navigator/context-map/ é criado automaticamente pelo scanner
+            # A pasta externa .context-map/ era lixo de versões anteriores
+            print(f"✅ Diretório de contexto será criado automaticamente pelo scanner")
             return True
         except Exception as e:
-            print(f"❌ Erro ao criar diretório de contexto: {e}")
+            print(f"❌ Erro: {e}")
             return False
             
     def create_launcher_script(self) -> bool:

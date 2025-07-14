@@ -124,7 +124,7 @@ dmypy.json
 
 # Context Navigator específico
 .context-navigator/
-.context-map/
+# .context-map/ - Removido: pasta externa era lixo de versões anteriores
 *-backup-*/
 
 # IDEs
