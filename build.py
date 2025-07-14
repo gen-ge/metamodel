@@ -572,17 +572,20 @@ fi
 # Executar instalação no workspace original
 echo "⚙️  Instalando..."
 cd "$extracted_dir"
-python3 install.py --target "$original_dir"
+python3 install.py --target "$original_dir" --global
 
 if [ $? -eq 0 ]; then
-    echo "✅ Instalação concluída!"
-    echo "💡 Execute './cn help' para começar"
+    echo "✅ Instalação global concluída!"
+    echo "💡 Execute 'cn help' para começar (sem ./)"
     
-    # Verificar se o launcher foi criado
-    if [ -f "$original_dir/cn" ]; then
-        echo "🎯 Launcher criado em: $original_dir/cn"
+    # Verificar se o launcher global foi criado
+    if [ -f "$HOME/.local/bin/cn" ]; then
+        echo "🎯 Launcher global criado em: $HOME/.local/bin/cn"
+        echo "💡 Adicione $HOME/.local/bin ao seu PATH se necessário"
+        echo "💡 Para usar: cn help"
     else
-        echo "⚠️  Launcher não encontrado. Verifique a instalação."
+        echo "⚠️  Launcher global não encontrado. Verifique a instalação."
+        echo "💡 Verifique se ~/.local/bin/ existe e tem permissões corretas"
     fi
 else
     echo "❌ Falha na instalação"
