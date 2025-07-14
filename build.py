@@ -109,7 +109,6 @@ class ContextNavigatorBuilder:
             src_files_to_include = [
                 "scripts/",
                 "templates/",
-                "core/",
                 "context.rule",
                 ".contextrc",
                 "__init__.py",
