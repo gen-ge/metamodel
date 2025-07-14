@@ -43,6 +43,9 @@ class ContextScanner:
         if not self.cn_dir:
             logger.error("❌ .context-navigator/ não encontrado")
             sys.exit(1)
+            
+        # Ajustar base_path para o diretório onde .context-navigator/ foi encontrado
+        self.base_path = self.cn_dir.parent
         
         # Carregar configuração
         self._load_config()
@@ -384,7 +387,12 @@ class ContextScanner:
         Args:
             file_path: Caminho do arquivo
         """
-        relative_path = file_path.relative_to(self.base_path)
+        try:
+            relative_path = file_path.relative_to(self.base_path)
+        except ValueError:
+            # Se não conseguir calcular caminho relativo, usar caminho absoluto
+            relative_path = file_path.resolve()
+            
         logger.debug(f"Processando: {relative_path}")
         
         try:
