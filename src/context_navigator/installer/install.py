@@ -46,7 +46,7 @@ class ContextNavigatorInstaller:
             self.source_dir = installer_path
         
         # Versão do Context Navigator
-        self.version = "1.0.0"
+        self.version = "1.1.0"
         
         print(f"🎯 Context Navigator Installer v{self.version}")
         if global_install:

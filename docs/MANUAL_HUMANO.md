@@ -61,7 +61,7 @@ Context Navigator é uma **metodologia pessoal** que:
 ```
 TODA interação com IA deve começar carregando:
 1. context.rule (regras metodológicas)
-2. .context-map/index.yml (contexto atual)
+2. context-map/index.yml (contexto atual)
 3. Validação de template apropriado
 ```
 
@@ -91,7 +91,7 @@ connections:
 context-navigator/    # Metodologia (não projeto)
 ├── .contextrc       # Configuração
 ├── context.rule     # Lei sagrada
-├── .context-map/    # Mapas automáticos
+├── context-map/     # Mapas automáticos
 ├── scripts/         # Ferramentas
 ├── templates/       # Templates
 ├── docs/            # Documentação
@@ -110,7 +110,7 @@ mkdir context-navigator
 cd context-navigator
 
 # Criar subpastas
-mkdir -p .context-map/contexts scripts templates docs examples
+mkdir -p context-map/contexts scripts templates docs examples
 ```
 
 ### **Passo 2: Configurar .contextrc**
@@ -234,7 +234,7 @@ python scripts/conflict_detector.py --type all
 
 ```
 1. Carregar context.rule
-2. Ler .context-map/index.yml
+2. Ler context-map/index.yml
 3. Aplicar template apropriado
 4. Pedir para IA revisar/expandir
 5. Validar resultado
@@ -1307,12 +1307,12 @@ python scripts/template_validator.py --file doc.md
 INFO - Context maps desatualizados
 
 # Diagnóstico
-ls -la .context-map/
-cat .context-map/index.yml
+ls -la context-map/
+cat context-map/index.yml
 
 # Solução
 # Forçar atualização:
-rm -rf .context-map/
+rm -rf context-map/
 python scripts/context_scanner.py --scan docs/
 ```
 
@@ -1331,7 +1331,7 @@ grep -n "context.rule" prompt.txt  # Verificar se carregou
 """
 CARREGAR OBRIGATORIAMENTE:
 1. context.rule (lei sagrada)
-2. .context-map/index.yml (contexto)
+2. context-map/index.yml (contexto)
 3. Template apropriado
 """
 ```
@@ -1374,7 +1374,7 @@ echo "=== FIM DO HEALTH CHECK ==="
 echo "Limpando cache do Context Navigator..."
 
 # Remover mapas temporários
-rm -rf .context-map/
+rm -rf context-map/
 
 # Remover logs
 rm -f *.log
@@ -1383,7 +1383,7 @@ rm -f *.log
 rm -f temp_*.md
 
 # Recriar estrutura
-mkdir -p .context-map/contexts
+mkdir -p context-map/contexts
 
 echo "Cache limpo. Execute o scanner para regenerar:"
 echo "python scripts/context_scanner.py --scan docs/"
@@ -1431,7 +1431,7 @@ find docs/ -name "*.md" -mtime +30
 python scripts/conflict_detector.py --type dependency
 
 # Limpeza de cache
-rm -rf .context-map/
+rm -rf context-map/
 python scripts/context_scanner.py --scan docs/
 ```
 
@@ -1663,7 +1663,7 @@ owner: "nome_responsavel"
 context-navigator/
 ├── .contextrc                    # Configuração principal
 ├── context.rule                  # Lei sagrada para IA
-├── .context-map/                 # Mapas automáticos
+├── context-map/                  # Mapas automáticos
 │   ├── index.yml                 # Índice geral
 │   ├── architecture.yml          # Visão arquitetural
 │   ├── connections.yml           # Conexões

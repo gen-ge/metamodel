@@ -1,73 +1,97 @@
 # 🧭 Context Navigator
 
-> Sistema de documentação context-aware para parceria humano-IA
+> Sistema de documentação que conecta automaticamente seus documentos e mantém a IA sempre contextualizada
 
 [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-stable-green.svg)]()
 
-## 🎯 O que é?
+## 🎯 O que faz?
 
-O **Context Navigator** resolve o problema de **perda de contexto** em projetos complexos. Ele conecta automaticamente documentos, detecta relacionamentos e mantém a IA sempre contextualizada.
+Transforma sua documentação em uma **rede inteligente** onde:
 
-### 💡 Problema → Solução
+- **Documentos se conectam automaticamente** (decisões ↔ processos ↔ referências)
+- **IA sempre tem contexto** do seu projeto via `context-map/`
+- **Templates padronizados** para decisões, processos, APIs, arquitetura
+- **Busca inteligente** funciona de qualquer pasta do projeto
 
-| 🔴 **Problema**                                | ✅ **Solução**                          |
-| ---------------------------------------------- | --------------------------------------- |
-| Perda de contexto em projetos complexos        | Navegação inteligente entre documentos  |
-| Retrabalho por falta de documentação conectada | Detecção automática de conexões         |
-| IA descontextualizada em prompts               | Contexto automático via `.context-map/` |
-| Desenvolvimento solo ineficiente               | Sugestões contextuais baseadas em IA    |
-
-### 🎯 Para quem é?
-
-- **Desenvolvedores solo** que precisam manter contexto em projetos complexos
-- **Equipes pequenas** que documentam decisões e processos
-- **Usuários de IA** que querem prompts sempre contextualizados
-- **Arquitetos de software** que precisam rastrear dependências
-
-## 🚀 Instalação (30 segundos)
+## 🚀 Instalação (1 comando)
 
 ```bash
-# Instalação global (recomendada)
 curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
-
-# Usar de qualquer lugar
-cn scan                          # Escanear documentos
-cn demo                          # Ver demonstração
-cn new decision "minha-decisao"  # Criar documento
 ```
 
-## ⚡ Exemplo Prático
+## ⚡ Primeiros Passos
 
 ```bash
-# 1. Instalar
-curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
-
-# 2. Criar primeiro documento
+# 1. Criar primeiro documento
 cn new decision "escolha_de_banco_de_dados"
 
-# 3. Escanear e conectar
+# 2. Escanear e conectar tudo
 cn scan
 
-# 4. Ver mágica acontecer
+# 3. Ver como funciona
 cn demo
 ```
 
-## 📋 O que você ganha?
+## 📋 Comandos Essenciais
 
-- **📝 Templates padronizados** para decisões, processos, referências
-- **🔍 Busca inteligente** funciona de qualquer subdiretório
-- **🤖 IA contextualizada** via regras automáticas
-- **📊 Métricas de qualidade** da sua documentação
-- **🔗 Conexões automáticas** entre documentos relacionados
+```bash
+# Criar documentos
+cn new decision "nome"      # Decisões técnicas (ADRs)
+cn new process "nome"       # Processos e tutoriais
+cn new reference "nome"     # APIs e referências
+cn new architecture "nome"  # Arquitetura e diagramas
 
-## 🎯 Documentação Completa
+# Gerenciar projeto
+cn scan                     # Escanear e conectar documentos
+cn demo                     # Ver demonstração completa
+cn validate                 # Validar qualidade
+cn help                     # Ver todos os comandos
+```
 
-- **⚡ [Guia de 15 minutos](QUICK_START.md)** - Aprenda o básico
+## 🎯 Tipos de Documento
+
+- **📋 Decisões**: ADRs, escolhas técnicas, trade-offs
+- **⚙️ Processos**: Runbooks, tutoriais, procedimentos
+- **📖 Referências**: APIs, documentação técnica, specs
+- **🏗️ Arquitetura**: Diagramas, componentes, fluxos
+- **🔍 Análises**: Debugging, investigações, métricas
+- **📅 Planejamento**: Roadmaps, sprints, projetos
+
+## 🔧 Como Funciona
+
+### 1. **Templates Inteligentes**
+
+Cada documento segue estrutura padronizada com metadados que conectam automaticamente
+
+### 2. **Busca Inteligente**
+
+Funciona de qualquer subdiretório - sempre encontra seu `.context-navigator/`
+
+### 3. **IA Contextualizada**
+
+Via `context.rule` e `context-map/` - IA sempre sabe o estado do seu projeto
+
+### 4. **Validação Automática**
+
+Detecta problemas, conflitos e sugere melhorias
+
+## 📚 Documentação
+
+- **⚡ [Guia Rápido](QUICK_START.md)** - 15 minutos para dominar
 - **⚙️ [Manual de Instalação](INSTALL.md)** - Todas as opções
-- **📖 [Documentação Completa](docs/)** - Guias detalhados
-- **🎯 [Exemplos Práticos](examples/)** - Casos de uso reais
+- **📖 [Manual Completo](docs/MANUAL_HUMANO.md)** - Guia detalhado
+- **🤖 [Manual da IA](docs/MANUAL_IA.md)** - Para sistemas de IA
+- **🎯 [Exemplos](examples/)** - Casos de uso reais
+
+## 🎁 O que você ganha?
+
+- ✅ **Documentação sempre conectada** - sem perder contexto
+- ✅ **IA sempre contextualizada** - prompts mais eficientes
+- ✅ **Templates padronizados** - consistência automática
+- ✅ **Busca inteligente** - funciona de qualquer lugar
+- ✅ **Validação automática** - detecta problemas antes
 
 ## 🔧 Requisitos
 

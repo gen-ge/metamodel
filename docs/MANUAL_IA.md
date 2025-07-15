@@ -28,7 +28,7 @@ architectural_impact: "critical"
 
 ```
 1. CARREGAR context.rule (lei sagrada)
-2. CARREGAR .context-map/index.yml (contexto atual)
+2. CARREGAR context-map/index.yml (contexto atual)
 3. IDENTIFICAR template apropriado
 4. VALIDAR contexto da requisição
 5. APLICAR protocolos específicos
@@ -94,10 +94,10 @@ protocols:
 
 ```yaml
 SEMPRE carregar:
-1. .context-map/index.yml (índice geral)
-2. .context-map/connections.yml (conexões)
-3. .context-map/conflicts.yml (conflitos)
-4. .context-map/architecture.yml (arquitetura)
+1. context-map/index.yml (índice geral)
+2. context-map/connections.yml (conexões)
+3. context-map/conflicts.yml (conflitos)
+4. context-map/architecture.yml (arquitetura)
 ```
 
 #### **Estrutura Esperada do Index.yml:**

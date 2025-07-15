@@ -51,9 +51,9 @@ cd /caminho/para/seu/projeto
 # Verificar se funciona
 cn status
 
-# Se não há instalação local, instalar:
-cn install  # (implementar depois)
-# Por enquanto: python3 /caminho/para/install.py
+# Se não há instalação local, você pode:
+# 1. Instalar localmente no projeto atual
+# 2. Ou usar apenas a instalação global
 ```
 
 ### **📁 Com Instalação Local:**

@@ -1,3 +1,25 @@
+---
+doc_type: "reference"
+context_level: "c1_root"
+context_type: "core"
+module: "context-navigator"
+priority: "critical"
+status: "active"
+connections:
+  references: ["MANUAL_HUMANO.md", "MANUAL_IA.md", "CONVENTIONS.md"]
+  impacts: ["install.py", "cn_global_launcher.py", "installer/"]
+  depends_on: ["install-context-navigator-latest.sh", "test_global_install.sh"]
+  relates_to: ["context_scanner.py", "context_engine.py"]
+created_date: "2025-01-13"
+last_updated: "2025-01-13"
+owner: "Context Navigator Team"
+tags: ["installation", "global", "script", "automation", "deployment"]
+complexity: "medium"
+maintenance_schedule: "monthly"
+stakeholders: ["developers", "users", "system-admins"]
+architectural_impact: "medium"
+---
+
 # 🌐 Context Navigator - Instalação Global
 
 ## 🎯 Usar o Context Navigator de Qualquer Diretório
@@ -6,7 +28,35 @@ Agora você pode usar o Context Navigator de qualquer diretório através do PAT
 
 ## 🚀 Métodos de Instalação
 
-### 1. 🌐 Instalação Global (Recomendada)
+### 1. 🌐 Instalação Global Automatizada (Recomendada)
+
+**Script de Instalação Oficial**: `install-context-navigator-latest.sh`
+
+```bash
+# 1. Baixar e executar script oficial
+curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
+
+# 2. Configurar PATH (adicione ao ~/.bashrc)
+export PATH="$HOME/.local/bin:$PATH"
+
+# 3. Recarregar o shell
+source ~/.bashrc
+
+# 4. Usar de qualquer diretório
+cn scan
+cn demo
+cn help
+```
+
+**Características do Script**:
+
+- ✅ **Download automático** da versão mais recente
+- ✅ **Verificação de dependências** (Python 3.7+, tar, wget/curl)
+- ✅ **Instalação segura** com limpeza automática
+- ✅ **Configuração do PATH** automática
+- ✅ **Validação da instalação**
+
+### 2. 📁 Instalação Manual Global
 
 ```bash
 # 1. Instalar globalmente
@@ -24,7 +74,7 @@ cn demo
 cn help
 ```
 
-### 2. 📁 Instalação Local + Launcher Global
+### 3. 📁 Instalação Local + Launcher Global
 
 ```bash
 # 1. Instalar localmente (método atual)
@@ -43,7 +93,7 @@ cn demo
 cn help
 ```
 
-### 3. 🔗 Criar Link Simbólico
+### 4. 🔗 Criar Link Simbólico
 
 ```bash
 # 1. Instalar localmente
@@ -79,7 +129,7 @@ projeto/
 
 # Você pode usar de qualquer lugar:
 cd projeto/                 # cn scan ✅
-cd projeto/src/            # cn scan ✅ (busca em ../
+cd projeto/src/            # cn scan ✅ (busca em ../)
 cd projeto/src/components/ # cn scan ✅ (busca em ../../)
 cd /qualquer/lugar/        # cn scan ✅ (usa instalação global)
 ```
@@ -133,6 +183,25 @@ set -x PATH $HOME/.local/bin $PATH
 
 ## 🧪 Testando a Instalação
 
+### Script de Teste Automatizado
+
+**Script de Teste**: `test_global_install.sh`
+
+```bash
+# Executar teste completo
+./test_global_install.sh
+```
+
+**O script testa**:
+
+- ✅ Disponibilidade do comando `cn`
+- ✅ Funcionamento do comando `cn help`
+- ✅ Criação de documentos
+- ✅ Scanner de contexto
+- ✅ Configuração do PATH
+
+### Testes Manuais
+
 ```bash
 # Verificar se o comando está disponível
 which cn
@@ -151,6 +220,8 @@ cn demo
 - ✅ **Busca inteligente automática**
 - ✅ **Compatível com instalações locais**
 - ✅ **Não interfere com o comportamento atual**
+- ✅ **Instalação automatizada com script**
+- ✅ **Testes automatizados de validação**
 
 ## 🔄 Migração do Método Antigo
 
@@ -168,27 +239,56 @@ Ambos os métodos funcionam simultaneamente!
 
 ## 📝 Exemplo Prático
 
+### Instalação Completa com Script
+
 ```bash
-# 1. Criar novo projeto
+# 1. Instalação automatizada
+curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
+
+# 2. Configurar PATH
+export PATH="$HOME/.local/bin:$PATH"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+# 3. Testar instalação
+./test_global_install.sh
+
+# 4. Usar em qualquer projeto
 mkdir meu-projeto
 cd meu-projeto
-
-# 2. Instalar Context Navigator globalmente
-python3 install.py --global
-
-# 3. Inicializar projeto
 cn new decision "Arquitetura do Sistema"
 cn new process "Deploy em Produção"
 
-# 4. Trabalhar de qualquer subdiretório
+# 5. Trabalhar de qualquer subdiretório
 cd src/components/
 cn scan                    # Funciona!
 cn validate               # Funciona!
 
-# 5. Trabalhar em outro projeto
+# 6. Trabalhar em outro projeto
 cd /outro/projeto/
 cn scan                   # Usa busca inteligente
 ```
+
+## 🛠️ Scripts de Instalação e Teste
+
+### Script Principal: `install-context-navigator-latest.sh`
+
+**Funcionalidades**:
+
+- 📥 Download automático da versão mais recente
+- 🔍 Verificação de dependências
+- 🧹 Limpeza automática de arquivos temporários
+- ⚙️ Configuração automática do PATH
+- 🎯 Criação do launcher global
+
+### Script de Teste: `test_global_install.sh`
+
+**Funcionalidades**:
+
+- 🧪 Teste completo da instalação
+- ✅ Validação de comandos
+- 🔍 Verificação do PATH
+- 📝 Teste de criação de documentos
+- 🎯 Verificação do scanner
 
 ## 🎯 Resumo
 
@@ -198,5 +298,17 @@ O Context Navigator agora é **muito mais flexível**:
 - 🔍 **Busca Inteligente**: Encontra `.context-navigator/` automaticamente
 - 📁 **Compatibilidade**: Métodos antigos ainda funcionam
 - 🎯 **Simplicidade**: Comando mais curto e intuitivo
+- 🤖 **Automatização**: Scripts de instalação e teste
+- 🛡️ **Confiabilidade**: Verificação automática de dependências
 
-**Recomendação**: Use a instalação global para uma experiência mais fluida!
+**Recomendação**: Use a instalação global automatizada para uma experiência mais fluida e confiável!
+
+---
+
+## 🔗 Arquivos Relacionados
+
+- **Scripts**: `install-context-navigator-latest.sh`, `test_global_install.sh`
+- **Instalador**: `install.py`
+- **Launcher**: `cn_global_launcher.py`
+- **Documentação**: `MANUAL_HUMANO.md`, `MANUAL_IA.md`, `CONVENTIONS.md`
+- **Templates**: `templates/`

@@ -2,6 +2,43 @@
 """
 🏗️ Context Navigator - Build Script
 Gera pacotes instaláveis do Context Navigator
+
+🚀 COMO USAR:
+
+# 1. Build básico (usa versão padrão)
+python3 build.py
+
+# 2. Build com versão específica
+python3 build.py --version 1.1.0
+
+# 3. Build com diretório fonte específico
+python3 build.py --source /caminho/para/metamodelo
+
+# 4. Apenas limpar diretórios (sem build)
+python3 build.py --clean-only
+
+# 5. Build completo com versão customizada
+python3 build.py --version 1.1.0-RELEASE --source .
+
+📦 ARQUIVOS GERADOS (em dist/):
+- context-navigator-{version}.tar.gz       # Pacote principal
+- context-navigator-latest.tar.gz          # Alias para latest
+- context-navigator-{version}.zip          # Pacote em formato zip
+- install-context-navigator-{version}.txt  # Instalador standalone Python
+- install-context-navigator-latest.txt     # Instalador standalone latest
+- install-context-navigator-latest.sh      # Script shell de instalação
+
+🎯 FLUXO TÍPICO:
+1. python3 build.py --version 1.1.0
+2. cd dist/
+3. # Enviar arquivos para GitHub releases
+4. # Testar: tar -xzf context-navigator-1.1.0.tar.gz && cd context-navigator-1.1.0 && python3 install.py
+
+⚙️ OPÇÕES:
+--version, -v    : Versão do build (padrão: 1.1.0)
+--source, -s     : Diretório fonte (padrão: .)
+--clean-only     : Apenas limpar diretórios de build
+--help, -h       : Mostrar ajuda
 """
 
 import os
@@ -26,7 +63,7 @@ class ContextNavigatorBuilder:
         """
         self.source_dir = Path(source_dir).resolve()
         self.src_dir = self.source_dir / "src" / "context_navigator"
-        self.version = version or "1.0.8"
+        self.version = version or "1.1.0"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         

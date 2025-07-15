@@ -1,25 +1,28 @@
-# 🧭 Context Navigator v1.0.26 - Documentação Atualizada
+# 🧭 Context Navigator v1.1.0 - Documentação Melhorada
 
 ## 🎯 Principais Melhorias
 
-### 🌐 Instalação Global
+### 📚 Documentação Completamente Reescrita
 
-- **Novo:** Comando `cn` disponível globalmente
-- **Novo:** Instalação em `~/.local/share/context-navigator/`
-- **Melhorado:** Script de instalação com opções
+- **Novo:** README.md mais conciso e funcional
+- **Corrigido:** Estrutura `context-map/` corrigida em todos os manuais
+- **Melhorado:** Manual da IA com protocolos mais claros
+- **Melhorado:** Manual Humano com exemplos práticos
+- **Consistente:** Todos os manuais agora consistentes
 
-### 🔍 Busca Inteligente
+### 🔧 Correções Estruturais
 
-- **Novo:** Busca automática por `.context-navigator/` em diretórios pais
-- **Melhorado:** Funciona de qualquer subdiretório do projeto
-- **Melhorado:** Sempre cria documentos no local correto
+- **Corrigido:** Referências incorretas a `.context-map/` (agora `context-map/`)
+- **Validado:** Estrutura real confirmada via instalação de teste
+- **Padronizado:** Versionamento consistente em todos os arquivos
+- **Melhorado:** Scripts de build com instruções claras
 
-### 📚 Documentação Atualizada
+### 🎯 Experiência do Usuário
 
-- **Corrigido:** README.md com instruções corretas
-- **Atualizado:** QUICK_START.md com comandos que funcionam
-- **Expandido:** INSTALL.md com opções globais e locais
-- **Novo:** Guia de instalação global completo
+- **Simplificado:** README focado no essencial para começar
+- **Organizado:** Comandos essenciais bem estruturados
+- **Claro:** Tipos de documento bem explicados
+- **Prático:** Fluxo de uso mais direto
 
 ## 🚀 Como Usar
 
@@ -40,25 +43,75 @@ cd context-navigator-*
 python3 install.py
 ```
 
+### Comandos Essenciais
+
+```bash
+# Criar documentos
+cn new decision "nome"      # Decisões técnicas (ADRs)
+cn new process "nome"       # Processos e tutoriais
+cn new reference "nome"     # APIs e referências
+cn new architecture "nome"  # Arquitetura e diagramas
+
+# Gerenciar projeto
+cn scan                     # Escanear e conectar documentos
+cn demo                     # Ver demonstração completa
+cn validate                 # Validar qualidade
+cn help                     # Ver todos os comandos
+```
+
 ## 📦 Arquivos Disponíveis
 
 - **`context-navigator-latest.tar.gz`** - Pacote principal
-- **`install-context-navigator-latest.sh`** - Script de instalação
-- **`install-context-navigator-latest.txt`** - Instalador Python
+- **`install-context-navigator-latest.sh`** - Script de instalação automatizada
+- **`test_global_install.sh`** - Script de teste da instalação
 
-## 🔧 Compatibilidade
+## 🔧 Estrutura Corrigida
+
+### ✅ Estrutura Real Confirmada
+
+```
+.context-navigator/                    # Diretório principal
+├── context-map/                       # Mapas de contexto (sem ponto)
+│   ├── index.yml                      # Índice geral
+│   ├── connections.yml                # Conexões entre documentos
+│   ├── conflicts.yml                  # Conflitos detectados
+│   └── architecture.yml               # Visão arquitetural
+├── docs/                              # Documentos do usuário
+│   ├── decisions/                     # Decisões criadas
+│   ├── processes/                     # Processos criados
+│   └── outros tipos...
+├── scripts/                           # Scripts de ferramentas
+├── templates/                         # Templates
+├── cn_cli.py                          # CLI principal
+├── context.rule                       # Regras para IA
+└── .contextrc                         # Configurações
+```
+
+## 🎯 Compatibilidade
 
 - Python 3.7+
 - Linux/macOS/Windows (Git Bash)
 - Nenhuma dependência externa
 
-## 🎯 Vantagens
+## 🎁 Vantagens da v1.1.0
 
-✅ **Comando simples**: `cn` ao invés de comandos longos  
-✅ **Busca inteligente**: Funciona de qualquer subdiretório  
-✅ **Instalação flexível**: Local ou global  
-✅ **Documentação atualizada**: Instruções que funcionam
+✅ **Documentação profissional**: Manuais consistentes e corretos  
+✅ **Experiência melhorada**: README focado no essencial  
+✅ **Estrutura validada**: Testado com instalação real  
+✅ **Versionamento padronizado**: Consistente em todos os arquivos  
+✅ **Pronto para uso**: Versão estável e confiável
+
+## 🔄 Migração da v1.0.x
+
+Não há breaking changes. A migração é transparente:
+
+```bash
+# Basta reinstalar
+curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
+```
 
 ---
 
 **📖 Documentação:** [README.md](README.md) | [QUICK_START.md](QUICK_START.md) | [INSTALL.md](INSTALL.md)
+
+**🎯 Esta versão marca um marco de estabilidade e qualidade da documentação!**
