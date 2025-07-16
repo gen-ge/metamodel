@@ -8,8 +8,8 @@ Gera pacotes instaláveis do Context Navigator
 # 1. Build básico (usa versão padrão)
 python3 build.py
 
-# 2. Build com versão específica
-python3 build.py --version 1.1.0
+# 2. Build com versão específica  
+python3 build.py --version 2.0.0
 
 # 3. Build com diretório fonte específico
 python3 build.py --source /caminho/para/metamodelo
@@ -18,7 +18,7 @@ python3 build.py --source /caminho/para/metamodelo
 python3 build.py --clean-only
 
 # 5. Build completo com versão customizada
-python3 build.py --version 1.1.0-RELEASE --source .
+python3 build.py --version 2.0.0-RELEASE --source .
 
 📦 ARQUIVOS GERADOS (em dist/):
 - context-navigator-{version}.tar.gz       # Pacote principal
@@ -29,13 +29,13 @@ python3 build.py --version 1.1.0-RELEASE --source .
 - install-context-navigator-latest.sh      # Script shell de instalação
 
 🎯 FLUXO TÍPICO:
-1. python3 build.py --version 1.1.0
+1. python3 build.py --version 2.0.0
 2. cd dist/
 3. # Enviar arquivos para GitHub releases
-4. # Testar: tar -xzf context-navigator-1.1.0.tar.gz && cd context-navigator-1.1.0 && python3 install.py
+4. # Testar: tar -xzf context-navigator-2.0.0.tar.gz && cd context-navigator-2.0.0 && python3 install.py
 
 ⚙️ OPÇÕES:
---version, -v    : Versão do build (padrão: 1.1.0)
+--version, -v    : Versão do build (padrão: 2.0.0)
 --source, -s     : Diretório fonte (padrão: .)
 --clean-only     : Apenas limpar diretórios de build
 --help, -h       : Mostrar ajuda
@@ -63,7 +63,7 @@ class ContextNavigatorBuilder:
         """
         self.source_dir = Path(source_dir).resolve()
         self.src_dir = self.source_dir / "src" / "context_navigator"
-        self.version = version or "1.1.0"
+        self.version = version or "2.0.0"
         self.build_dir = self.source_dir / "build"
         self.dist_dir = self.source_dir / "dist"
         
@@ -144,12 +144,14 @@ class ContextNavigatorBuilder:
             
             # Arquivos e diretórios para incluir em source/ (de src/context_navigator/)
             src_files_to_include = [
-                "scripts/",
-                "templates/",
-                "context.rule",
-                ".contextrc",
-                "__init__.py",
-                "cn_cli.py"
+                "core/",              # ✅ NOVO - Módulo global (workspace_manager, daemon_manager, etc.)
+                "scripts/",           # ✅ Scripts globais (todos os .py)
+                "templates/",         # ✅ Templates para usuários
+                "installer/",         # ✅ Sistema de instalação global
+                "context.rule",       # ✅ Regras de contexto
+                ".contextrc",         # ✅ Configuração (se existir)
+                "__init__.py",        # ✅ Módulo principal
+                "cn_cli_legacy.py"    # ✅ CLI legado (nome correto)
             ]
             
             for item in src_files_to_include:
@@ -172,9 +174,7 @@ class ContextNavigatorBuilder:
             root_files_to_include = [
                 "docs/",
                 "examples/", 
-                "README.md",
-                "QUICK_START.md",
-                "INSTALL.md",
+                "README.md",               
                 "LICENSE"
             ]
             
@@ -606,10 +606,10 @@ if [ ! -f "$extracted_dir/install.py" ]; then
     exit 1
 fi
 
-# Executar instalação no workspace original
+# Executar instalação global
 echo "⚙️  Instalando..."
 cd "$extracted_dir"
-python3 install.py --target "$original_dir" --global
+python3 install.py --global
 
 if [ $? -eq 0 ]; then
     echo "✅ Instalação global concluída!"
@@ -656,9 +656,7 @@ echo "🧹 Limpando arquivos temporários..."
             # Verificar arquivos essenciais na raiz do pacote
             root_files = [
                 "install.py",
-                "README.md",
-                "QUICK_START.md",
-                "INSTALL.md"
+                "README.md"
             ]
             
             for file in root_files:
@@ -677,11 +675,11 @@ echo "🧹 Limpando arquivos temporários..."
             
             # Verificar arquivos essenciais em source/
             source_files = [
-                "scripts/context_scanner.py",
+                "scripts/core/context_scanner.py",
                 "templates/decisao.md",
                 "context.rule",
                 ".contextrc",
-                "cn_cli.py"
+                "cn_cli_legacy.py"
             ]
             
             for file in source_files:

@@ -1,4 +1,20 @@
 #!/usr/bin/env python3
+
+# ===== CONTEXT NAVIGATOR CODE BRIDGE =====
+# @cn:module cli-interface
+# @cn:doc cli-interface.md
+# @cn:context-level c2_module
+# @cn:context-type interface
+# @cn:parent-system context-navigator
+# @cn:purpose "Interface de linha de comando para Context Navigator"
+# @cn:memory-aid "Portal de entrada - executa comandos e coordena componentes do sistema"
+# @cn:depends-on context-engine, template-validator, context-scanner
+# @cn:impacts user-experience, workflow-automation
+# @cn:provides cli-commands, user-interaction, command-routing
+# @cn:component-type interface
+# @cn:responsibility user-interaction
+# ============================================
+
 """
 Context Navigator - CLI Principal
 COMPORTAMENTO BURRO: Entry point simples, sem tentativas de "ser inteligente"

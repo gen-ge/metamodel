@@ -98,50 +98,53 @@ class ConflictDetector:
             base_path: Caminho base do projeto
         """
         self.base_path = Path(base_path)
-        self.config = {}
-        self.documents = {}
-        self.context_maps = {}
         self.conflicts = []
         
+        # NOVO: Usar WorkspaceManager para detectar workspace
+        self._init_with_workspace_manager()
+        
         # Carregar dados necessários
-        self._load_config()
         self._load_context_maps()
         
         # Inicializar padrões de detecção
         self._init_detection_patterns()
         
-    def _load_config(self) -> None:
-        """Carrega configuração do .contextrc"""
-        # Procurar .contextrc em múltiplas localizações
-        config_locations = [
-            self.base_path / ".contextrc",  # Raiz do workspace
-            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
-        ]
-        
-        config_file = None
-        for location in config_locations:
-            if location.exists():
-                config_file = location
-                break
-        
-        if not config_file:
-            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
-            for location in config_locations:
-                logger.error(f"  - {location}")
-            return
-            
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
         try:
-            with open(config_file, 'r', encoding='utf-8') as f:
-                self.config = yaml.safe_load(f)
-            logger.info(f"Configuração carregada com sucesso de {config_file}")
-        except Exception as e:
-            logger.error(f"Erro ao carregar configuração: {e}")
-            
+            from ..core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager, Workspace
+        
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            logger.error("❌ Context Navigator workspace não encontrado")
+            logger.error("💡 Execute 'cn init' para configurar este diretório")
+            sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.output_dir = current_workspace.root_path / ".cn_model"
+        
+        # Configuração vem do workspace
+        self.config = current_workspace.configuration
+        self.documents = {}
+        self.context_maps = {}
+        
+        logger.info(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
+        
     def _load_context_maps(self) -> None:
         """Carrega mapas de contexto existentes"""
-        # Usar configuração do .contextrc
-        scanner_config = self.config.get('scanner', {}).get('directories', {})
-        context_maps_path = self.base_path / scanner_config.get('context_maps_path', '.context-map')
+        # Usar nova arquitetura: mapas ficam em .cn_model/
+        context_maps_path = self.output_dir
         
         if not context_maps_path.exists():
             logger.warning("Mapas de contexto não encontrados")
@@ -1017,7 +1020,24 @@ def main():
     
     args = parser.parse_args()
     
-    detector = ConflictDetector(args.path)
+    # Detectar workspace usando WorkspaceManager
+    try:
+        from ..core.workspace_manager import WorkspaceManager
+    except ImportError:
+        # Fallback para desenvolvimento
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from core.workspace_manager import WorkspaceManager
+    
+    workspace_manager = WorkspaceManager()
+    current_workspace = workspace_manager.detect_current_workspace()
+    
+    if not current_workspace:
+        print("❌ Context Navigator workspace não encontrado")
+        print("💡 Execute 'cn init' para configurar este diretório")
+        return 1
+    
+    detector = ConflictDetector()
     
     if args.resolve:
         print(f"Resolução automática não implementada para ID: {args.resolve}")

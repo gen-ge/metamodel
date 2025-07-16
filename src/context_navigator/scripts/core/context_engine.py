@@ -1,4 +1,24 @@
 #!/usr/bin/env python3
+
+# ===== CONTEXT NAVIGATOR CODE BRIDGE =====
+# @cn:component context-engine
+# @cn:doc context-engine.md
+# @cn:context-level c3_component
+# @cn:context-type core
+# @cn:parent-module cli-interface
+# @cn:purpose "Motor principal de processamento contextual - automatiza decisões sobre templates e contextos"
+# @cn:memory-aid "Coração do sistema - analisa conteúdo, recomenda templates, sugere conexões e melhorias"
+# @cn:depends-on context.rule, CONVENTIONS.md, template-definitions
+# @cn:impacts template-validation, document-processing, user-guidance
+# @cn:provides content-analysis, template-recommendation, context-suggestion, improvement-suggestions
+# @cn:component-type functional
+# @cn:responsibility context-processing
+# @cn:single-purpose true
+# @cn:complexity critical
+# @cn:owner Context Navigator Team
+# @cn:last-updated 2025-01-13
+# ============================================
+
 """
 Context Navigator - Context Engine
 Engine metodológica inteligente que automatiza decisões sobre templates, 
@@ -23,6 +43,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger('context_engine')
 
+# @cn:class business-entity
+# @cn:responsibility data-structure
+# @cn:purpose "Estrutura de dados para resultado de análise de conteúdo"
 @dataclass
 class ContentAnalysis:
     """Resultado da análise de conteúdo"""
@@ -33,6 +56,9 @@ class ContentAnalysis:
     domain: str
     confidence: float
 
+# @cn:class business-entity
+# @cn:responsibility data-structure
+# @cn:purpose "Estrutura de dados para recomendação de template"
 @dataclass
 class TemplateRecommendation:
     """Recomendação de template"""
@@ -41,6 +67,9 @@ class TemplateRecommendation:
     reasoning: str
     alternative_templates: List[str]
 
+# @cn:class business-entity
+# @cn:responsibility data-structure
+# @cn:purpose "Estrutura de dados para recomendação de contexto"
 @dataclass
 class ContextRecommendation:
     """Recomendação de contexto"""
@@ -66,9 +95,17 @@ class ImprovementSuggestion:
     priority: str
     action: str
 
+# @cn:class service
+# @cn:responsibility context-processing
+# @cn:pattern singleton
+# @cn:lifecycle singleton
+# @cn:purpose "Serviço principal que analisa conteúdo e recomenda templates/contextos"
 class ContextEngine:
     """Engine metodológica inteligente do Context Navigator"""
     
+    # @cn:function core
+    # @cn:process initialization
+    # @cn:step 1
     def __init__(self, base_path: str = "."):
         """
         Inicializa a engine
@@ -81,53 +118,68 @@ class ContextEngine:
         self.documents = {}
         self.context_maps = {}
         
-        # Carregar configuração e dados
-        self._load_config()
+        # NOVO: Usar WorkspaceManager para detectar workspace
+        self._init_with_workspace_manager()
+        
+        # Carregar dados de contexto
         self._load_context_maps()
         
         # Padrões para análise de conteúdo
         self._init_content_patterns()
         
-    def _load_config(self) -> None:
-        """Carrega configuração do .contextrc"""
-        # Procurar .contextrc em múltiplas localizações
-        config_locations = [
-            self.base_path / ".contextrc",  # Raiz do workspace
-            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
-        ]
-        
-        config_file = None
-        for location in config_locations:
-            if location.exists():
-                config_file = location
-                break
-        
-        if not config_file:
-            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
-            for location in config_locations:
-                logger.error(f"  - {location}")
-            return
-            
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
         try:
-            with open(config_file, 'r', encoding='utf-8') as f:
-                self.config = yaml.safe_load(f)
-            logger.info(f"Configuração carregada com sucesso de {config_file}")
-        except Exception as e:
-            logger.error(f"Erro ao carregar configuração: {e}")
+            from ..core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager, Workspace
+        
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            logger.error("❌ Context Navigator workspace não encontrado")
+            logger.error("💡 Execute 'cn init' para configurar este diretório")
+            sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.output_dir = current_workspace.root_path / ".cn_model"
+        
+        # Configuração vem do workspace
+        self.config = current_workspace.configuration
+        
+        logger.info(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
+        
+    # @cn:function integration
+    # @cn:process configuration-loading
+    # @cn:step 2
+    # @cn:file-dependency .contextrc
+    # @cn:error-handling required
+
             
+    # @cn:function integration
+    # @cn:process context-maps-loading
+    # @cn:step 3
+    # @cn:directory-dependency .context-map/
+    # @cn:depends-on configuration
     def _load_context_maps(self) -> None:
         """Carrega mapas de contexto existentes"""
-        # Usar configuração do .contextrc
-        scanner_config = self.config.get('scanner', {}).get('directories', {})
-        context_maps_path = self.base_path / scanner_config.get('context_maps_path', '.context-map')
+        # Usar arquitetura workspace: mapas ficam em .cn_model/
+        context_maps_path = self.output_dir
+        map_files = ['index.yml', 'component-map.yml', 'context-map/index.yml']
         
         if not context_maps_path.exists():
             logger.warning("Mapas de contexto não encontrados")
             return
             
         # Carregar mapas principais
-        map_files = ['index.yml', 'architecture.yml', 'connections.yml', 'conflicts.yml']
-        
         for map_file in map_files:
             file_path = context_maps_path / map_file
             if file_path.exists():

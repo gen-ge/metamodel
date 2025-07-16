@@ -1,54 +1,118 @@
-# 🎯 CONTEXT NAVIGATOR - LEI SAGRADA PARA IA
+# 🎯 CONTEXT NAVIGATOR 2.0 - LEI SAGRADA PARA IA
 # Protocolo obrigatório que deve ser seguido religiosamente em TODOS os prompts
-# Versão: 1.0.0 | Data: 2024-01-15
+# Versão: 2.0.0 | Data: 2025-01-13
 
 # =============================================================================
-# PROTOCOLO FUNDAMENTAL
+# PROTOCOLO FUNDAMENTAL 2.0
 # =============================================================================
 
 ## 🚨 ANTES DE QUALQUER AÇÃO, SEMPRE:
 
-1. **CARREGAR CONTEXTO**
-   - Ler .contextrc para entender a metodologia
-   - Carregar .context-map/index.yml para visão geral
-   - Verificar .context-map/connections.yml para relacionamentos
+1. **DETECTAR WORKSPACE VIA WORKSPACEMANAGER**
+   - Verificar .cn_model/workspace.yml (diretório atual)
+   - Buscar ../.cn_model/workspace.yml (diretórios pais, recursivo)
+   - Fallback: ~/.local/share/context-navigator/ (instalação global)
+   - Fallback: ~/.context-navigator/ (compatibilidade 1.0)
 
-2. **IDENTIFICAR CONTEXTO ATUAL**
+2. **CARREGAR CONTEXTO 2.0**
+   - Ler .cn_model/workspace.yml para configuração
+   - Carregar .cn_model/maps/index.yml para visão geral
+   - Verificar .cn_model/maps/connections.yml para relacionamentos
+   - Analisar .cn_model/components/ para componentização
+
+3. **IDENTIFICAR CONTEXTO ATUAL**
    - Determinar context_level (c1_root | c2_module | c3_component)
    - Determinar context_type (infra | shared | core | api | data | ui)
    - Identificar módulo específico
-   - Mapear conexões existentes
+   - Mapear conexões existentes via WorkspaceManager
 
-3. **VALIDAR ANTES DE AGIR**
+4. **VALIDAR ANTES DE AGIR**
    - Verificar tipo de documento apropriado
-   - Confirmar template correto
+   - Confirmar template correto (global ou personalizado)
    - Validar metadados obrigatórios
    - Checar consistência com documentos relacionados
 
 # =============================================================================
-# REGRAS DE DOCUMENTAÇÃO
+# ARQUITETURA 2.0 ESSENCIAL
+# =============================================================================
+
+## 🧠 WORKSPACEMANAGER - NÚCLEO DO SISTEMA
+
+### DETECÇÃO AUTOMÁTICA (OBRIGATÓRIA):
+1. **.cn_model/workspace.yml** (workspace local)
+2. **../.cn_model/workspace.yml** (busca recursiva em pais)
+3. **~/.local/share/context-navigator/** (instalação global)
+4. **~/.context-navigator/** (compatibilidade 1.0)
+
+### ESTRUTURA WORKSPACE 2.0:
+```
+.cn_model/
+├── workspace.yml        # Configuração principal
+├── components/          # Componentes documentados (@cn:)
+├── templates/           # Templates personalizados (opcional)
+└── maps/               # Mapas contextuais
+    ├── index.yml       # Índice principal
+    ├── connections.yml # Conexões entre documentos
+    └── conflicts.yml   # Conflitos detectados
+```
+
+### NUNCA MAIS:
+- ❌ Assumir localização de workspace
+- ❌ Salvar em .context-map/ (arquitetura 1.0)
+- ❌ Referenciar .contextrc (migrado para workspace.yml)
+- ❌ Ignorar WorkspaceManager detection
+
+## 🧩 CODE BRIDGE - COMPONENTIZAÇÃO
+
+### PROTOCOLO @cn: (OBRIGATÓRIO QUANDO GERAR CÓDIGO):
+```python
+# ===== CONTEXT NAVIGATOR CODE BRIDGE =====
+# @cn:component nome-componente
+# @cn:doc arquivo-documentacao.md
+# @cn:context-level c1_root|c2_module|c3_component
+# @cn:context-type core|api|data|ui|infra|shared
+# @cn:purpose "Descrição clara do propósito"
+# @cn:memory-aid "Lembrete para humanos e IA"
+# ============================================
+```
+
+### SEMPRE QUE GERAR/MODIFICAR CÓDIGO:
+1. **Adicionar marcações @cn:** apropriadas no código gerado
+2. **Conectar com documentação** existente ou sugerir criação
+3. **Validar consistência** entre código e docs
+4. **Registrar componente** em .cn_model/components/
+5. **Manter sincronia** docs ↔ código
+
+# =============================================================================
+# REGRAS DE DOCUMENTAÇÃO 2.0
 # =============================================================================
 
 ## 📝 CRIAÇÃO DE DOCUMENTOS
 
-### SEMPRE usar o template apropriado:
-- **DECISÃO** (40%): PRD, ADR, RFC, escolhas técnicas → decisao.md
-- **PROCESSO** (20%): Runbooks, playbooks, tutoriais → processo.md  
-- **REFERÊNCIA** (15%): APIs, glossários, especificações → referencia.md
-- **ARQUITETURA** (10%): Diagramas, modelagem, design → arquitetura.md
-- **ANÁLISE** (10%): Performance, bugs, investigações → analise.md
-- **PLANEJAMENTO** (5%): Roadmaps, sprints, releases → planejamento.md
+### TEMPLATES INALTERADOS (100% compatíveis):
+- **DECISÃO** (40%): PRD, ADR, RFC, escolhas técnicas → decision.md
+- **PROCESSO** (20%): Runbooks, playbooks, tutoriais → process.md  
+- **REFERÊNCIA** (15%): APIs, glossários, especificações → reference.md
+- **ARQUITETURA** (10%): Diagramas, modelagem, design → architecture.md
+- **ANÁLISE** (10%): Performance, bugs, investigações → analysis.md
+- **PLANEJAMENTO** (5%): Roadmaps, sprints, releases → planning.md
 
-### SEMPRE incluir metadados COMPLETOS:
+### BUSCA DE TEMPLATES (HIERÁRQUICA):
+1. .cn_model/templates/ (templates personalizados)
+2. ~/.local/share/context-navigator/templates/ (templates globais)
+3. Templates embutidos no sistema (fallback)
+
+### METADADOS OBRIGATÓRIOS (INALTERADOS):
 
 ```yaml
 ---
 # OBRIGATÓRIOS (nunca omitir)
 doc_type: "[decision|process|reference|architecture|analysis|planning]"
-title: "[Título específico e descritivo]"
 context_level: "[c1_root|c2_module|c3_component]"
 context_type: "[infra|shared|core|api|data|ui]"
 module: "[Nome específico do módulo]"
+priority: "[critical|high|medium|low]"
+status: "[draft|active|deprecated|archived]"
 connections:
   references: []    # Documentos referenciados
   impacts: []       # Documentos impactados  
@@ -57,246 +121,323 @@ connections:
   relates_to: []    # Documentos relacionados
 created_date: "YYYY-MM-DD"
 last_updated: "YYYY-MM-DD"
+owner: "[Nome do responsável]"
 
 # OPCIONAIS (incluir quando relevante)
-priority: "[critical|high|medium|low]"
-status: "[draft|review|active|deprecated|archived]"
-owner: "[Nome do responsável]"
 tags: ["tag1", "tag2", "tag3"]
 complexity: "[low|medium|high|critical]"
+version: "[semantic version]"
 ---
 ```
 
-### SEMPRE incluir metadados inline:
+# =============================================================================
+# SCRIPTS ORGANIZADOS 2.0
+# =============================================================================
 
-```html
-<!-- CONTEXT_META
-template_version: "1.0.0"
-template_type: "[tipo_do_template]"
-generated_by: "context-navigator"
-validation_status: "pending"
-compliance_check: "passed"
--->
+## 🛠️ ARQUITETURA DE SCRIPTS
+
+### ORGANIZAÇÃO POR RESPONSABILIDADE:
+```
+scripts/
+├── core/           # Processamento essencial (2 scripts)
+│   ├── context_scanner.py      # Scanner com WorkspaceManager
+│   └── context_engine.py       # Motor contextual
+├── validation/     # Validação de qualidade (3 scripts)
+│   ├── template_validator.py   # Validador de templates
+│   ├── cn_consistency_validator.py # Validador de consistência
+│   └── metrics_validator.py    # Validador de métricas
+├── analysis/       # Análise avançada (4 scripts)
+│   ├── pattern_detector.py     # Detector de padrões
+│   ├── conflict_detector.py    # Detector de conflitos
+│   ├── impact_analyzer.py      # Analisador de impactos
+│   └── context_advisor.py      # Consultor inteligente
+└── tools/          # Utilitários (4 scripts)
+    ├── cn_component_explorer.py # Explorador de componentes
+    ├── cn_component_parser.py   # Parser de componentes
+    ├── context_demo.py          # Sistema de demonstração
+    └── cn_global_launcher.py    # Launcher global
 ```
 
-## 🔗 GESTÃO DE CONEXÕES
-
-### SEMPRE mapear relacionamentos:
-- **references**: Este documento menciona/usa outros
-- **impacts**: Este documento afeta outros
-- **depends_on**: Este documento precisa de outros
-- **blocks**: Este documento impede outros
-- **relates_to**: Este documento se relaciona com outros
-
-### SEMPRE usar padrões corretos:
-- `[[nome-do-documento]]` para referências diretas
-- `{{nome-do-componente}}` para componentes
-- `@contexto` para referências de contexto
-- `#metric-name` para métricas específicas
-- `/path/to/resource` para recursos do sistema
-
-### SEMPRE verificar consistência:
-- Conexões bidirecionais devem ser simétricas
-- Dependências não podem ser circulares
-- Referências devem apontar para documentos existentes
+### TODOS OS SCRIPTS DEVEM:
+1. **Usar WorkspaceManager** para detectar workspace primeiro
+2. **Salvar em .cn_model/** (não .context-map/)
+3. **Suportar comando global** `cn` via launcher
+4. **Validar workspace** antes de processar
 
 # =============================================================================
-# REGRAS DE VALIDAÇÃO
+# COMANDOS GLOBAIS 2.0
+# =============================================================================
+
+## 🌐 INTERFACE UNIFICADA
+
+### COMANDOS ESSENCIAIS:
+```bash
+# Setup e gerenciamento
+cn init                  # Inicializar workspace
+cn status               # Status do workspace detectado
+cn demo                 # Demonstração interativa
+
+# Criação de documentos
+cn new decision "nome"   # Criar decisão técnica
+cn new process "nome"    # Criar processo/runbook
+cn new reference "nome"  # Criar API/referência
+cn new architecture "nome" # Criar arquitetura/diagrama
+cn new analysis "nome"   # Criar análise/investigação
+cn new planning "nome"   # Criar planejamento/roadmap
+
+# Ferramentas principais
+cn scan                 # Escanear documentos (WorkspaceManager automático)
+cn validate             # Validação completa
+cn explore              # Explorar componentes
+cn conflicts            # Detectar conflitos
+cn metrics              # Métricas de qualidade
+cn advisor              # Sugestões inteligentes
+```
+
+### SEMPRE:
+- ✅ Comando `cn` funciona de qualquer diretório
+- ✅ WorkspaceManager detecta workspace automaticamente
+- ✅ Salva em estrutura .cn_model/ apropriada
+- ✅ Roteamento automático para scripts especializados
+
+# =============================================================================
+# REGRAS DE VALIDAÇÃO 2.0
 # =============================================================================
 
 ## ✅ ANTES DE FINALIZAR QUALQUER DOCUMENTO:
 
-### 1. VALIDAR METADADOS
+### 1. VALIDAR WORKSPACE
+- [ ] WorkspaceManager detectou workspace corretamente
+- [ ] Estrutura .cn_model/ existe e é válida
+- [ ] Permissões de leitura/escrita funcionam
+
+### 2. VALIDAR METADADOS (INALTERADOS)
 - [ ] Todos os campos obrigatórios preenchidos
 - [ ] Valores dentro das opções permitidas
 - [ ] Datas no formato correto (YYYY-MM-DD)
 - [ ] Conexões mapeadas corretamente
 
-### 2. VALIDAR CONTEÚDO
+### 3. VALIDAR CONTEÚDO (INALTERADO)
 - [ ] Template apropriado usado
 - [ ] Estrutura seguida corretamente
 - [ ] Seções obrigatórias presentes
 - [ ] Informações suficientes e precisas
 
-### 3. VALIDAR CONTEXTO
+### 4. VALIDAR CONTEXTO 2.0
 - [ ] Context_level consistente com localização
 - [ ] Context_type adequado ao propósito
 - [ ] Módulo corretamente identificado
-- [ ] Relacionamentos com outros documentos mapeados
+- [ ] Relacionamentos mapeados via WorkspaceManager
 
-### 4. VALIDAR QUALIDADE
-- [ ] Linguagem clara e objetiva
-- [ ] Informações atualizadas
-- [ ] Exemplos práticos incluídos (quando aplicável)
-- [ ] Critérios de aceitação definidos (quando aplicável)
-
-# =============================================================================
-# REGRAS DE ATUALIZAÇÃO
-# =============================================================================
-
-## 🔄 AO MODIFICAR DOCUMENTOS EXISTENTES:
-
-### SEMPRE atualizar:
-- Campo `last_updated` com data atual
-- Conexões se relacionamentos mudaram  
-- Status se aplicável
-- Histórico de versões
-
-### SEMPRE verificar impactos:
-- Documentos que referenciam este
-- Documentos impactados por este
-- Dependências que podem quebrar
-- Consistência geral mantida
-
-### SEMPRE executar validação completa após mudanças
+### 5. VALIDAR COMPONENTIZAÇÃO
+- [ ] Marcações @cn: adicionadas quando gerar código
+- [ ] Documentação conectada ou criada conforme necessário  
+- [ ] Componentes registrados em .cn_model/components/
+- [ ] Sincronia docs ↔ código mantida
 
 # =============================================================================
-# REGRAS DE CONTEXTO
+# REGRAS DE MIGRAÇÃO 1.0 → 2.0
 # =============================================================================
 
-## 📍 IDENTIFICAÇÃO DE CONTEXTO:
+## 🔄 COMPATIBILIDADE E MIGRAÇÃO
 
-### Context Level (Hierárquico):
-- **c1_root**: Contexto principal do projeto (Ex: pasta "Gen")
-- **c2_module**: Contexto de módulo (Ex: "front", "back", "shared")  
-- **c3_component**: Contexto específico (Ex: "auth", "payment", "user")
+### SE DETECTAR ARQUITETURA 1.0:
+```yaml
+Detectado: .contextrc + .context-map/
+Ação Automática:
+  1. Informar sobre migração disponível
+  2. Sugerir comandos: cn init (migração automática)
+  3. Manter compatibilidade temporária
+  4. Documentar que está usando formato legado
+```
 
-### Context Type (Especializado):
-- **infra**: Infraestrutura e deploy
-- **shared**: Componentes compartilhados
-- **core**: Lógica de negócio central
-- **api**: Interfaces e contratos
-- **data**: Persistência e dados
-- **ui**: Interface de usuário
+### MIGRAÇÃO AUTOMÁTICA:
+```yaml
+cn init detecta e migra:
+  .contextrc → .cn_model/workspace.yml
+  .context-map/ → .cn_model/maps/
+  Scripts antigos → Launcher moderno
+  Manter arquivos 1.0 para segurança
+```
 
-### SEMPRE confirmar contexto baseado em:
-- Localização na estrutura do projeto
-- Propósito e responsabilidade
-- Relacionamentos com outros componentes
-- Padrões arquiteturais aplicados
+### NUNCA:
+- ❌ Quebrar compatibilidade forçadamente
+- ❌ Perder dados durante migração
+- ❌ Assumir que usuário quer migrar
+- ❌ Misturar estruturas 1.0 e 2.0
 
 # =============================================================================
-# REGRAS DE INTERAÇÃO
+# REGRAS DE INTERAÇÃO 2.0
 # =============================================================================
 
-## 🤝 COLABORAÇÃO HUMANO-IA:
+## 🤝 COLABORAÇÃO HUMANO-IA MODERNA:
 
 ### AO RECEBER SOLICITAÇÃO:
-1. **Analisar contexto atual** usando context maps
-2. **Confirmar entendimento** do que é solicitado
-3. **Sugerir template apropriado** baseado no tipo
-4. **Mapear conexões relevantes** automaticamente
-5. **Gerar conteúdo seguindo metodologia** rigorosamente
+1. **Executar detecção WorkspaceManager** automaticamente
+2. **Analisar contexto via .cn_model/maps/** 
+3. **Confirmar entendimento** baseado em workspace detectado
+4. **Sugerir template apropriado** (global ou personalizado)
+5. **Mapear conexões Code Bridge** quando relevante
+6. **Gerar conteúdo seguindo metodologia 2.0** rigorosamente
 
 ### AO SUGERIR MELHORIAS:
-1. **Identificar inconsistências** de contexto
-2. **Sugerir conexões faltantes** baseado em análise
-3. **Recomendar atualizações** de documentos relacionados
-4. **Alertar sobre conflitos** potenciais
-5. **Propor reorganização** se necessário
+1. **Identificar oportunidades de componentização** (@cn:)
+2. **Sugerir conexões faltantes** baseado em WorkspaceManager
+3. **Recomendar uso de comandos globais** `cn`
+4. **Alertar sobre inconsistências** entre docs ↔ código
+5. **Propor organização** seguindo hierarquia c1/c2/c3
 
 ### AO DETECTAR PROBLEMAS:
-1. **Reportar imediatamente** inconsistências
-2. **Sugerir correções específicas** com base na metodologia
-3. **Mapear impactos** de mudanças propostas
-4. **Validar soluções** contra regras estabelecidas
+1. **Verificar status do WorkspaceManager** primeiro
+2. **Reportar problemas de workspace** (.cn_model/ estrutura)
+3. **Sugerir migração 1.0→2.0** se aplicável
+4. **Mapear impactos** usando nova arquitetura
+5. **Validar soluções** contra regras 2.0
 
 # =============================================================================
-# REGRAS DE QUALIDADE
+# CASOS ESPECIAIS 2.0
 # =============================================================================
 
-## 🎯 PADRÕES DE EXCELÊNCIA:
+## 🚨 SITUAÇÕES ESPECÍFICAS
 
-### DOCUMENTAÇÃO DEVE SER:
+### WORKSPACE NÃO DETECTADO:
+```yaml
+Ação:
+  1. Informar que nenhum workspace foi encontrado
+  2. Sugerir: cn init (inicialização)
+  3. Oferecer usar templates globais como fallback
+  4. Documentar que salvará em instalação global
+```
+
+### TEMPLATES PERSONALIZADOS:
+```yaml
+Prioridade:
+  1. .cn_model/templates/ (específicos do projeto)
+  2. ~/.local/share/context-navigator/templates/ (globais)
+  3. Templates padrão embutidos (fallback)
+```
+
+### COMPONENTIZAÇÃO INCOMPLETA:
+```yaml
+Se gerar código com @cn: incompleto:
+  1. Completar campos obrigatórios ausentes
+  2. Adicionar campos necessários automaticamente
+  3. Conectar com documento existente ou criar novo
+  4. Garantir marcação @cn: completa no código gerado
+```
+
+# =============================================================================
+# REGRAS DE QUALIDADE 2.0
+# =============================================================================
+
+## 🎯 PADRÕES DE EXCELÊNCIA MODERNOS:
+
+### DOCUMENTAÇÃO DEVE SER (INALTERADO):
 - **Específica**: Informações precisas e detalhadas
 - **Mensurável**: Critérios objetivos quando aplicável
 - **Atingível**: Realista e implementável
 - **Relevante**: Importante para o contexto
 - **Temporal**: Prazos e cronogramas claros
 
-### SEMPRE INCLUIR:
-- **Contexto suficiente** para entendimento
-- **Exemplos práticos** quando apropriado
-- **Critérios de validação** claros
-- **Próximos passos** bem definidos
-- **Responsabilidades** atribuídas
+### SEMPRE INCLUIR 2.0:
+- **Workspace context** detectado via WorkspaceManager
+- **Code Bridge references** quando aplicável (@cn:)
+- **Componentização** explícita entre docs ↔ código
+- **Templates** apropriados (globais ou personalizados)
+- **Comando `cn`** para ações recomendadas
 
-### NUNCA FAZER:
-- Documentos sem metadados completos
-- Referências quebradas ou incorretas
-- Informações desatualizadas sem aviso
-- Decisões sem justificativa
-- Processos sem validação
+### NUNCA FAZER 2.0:
+- Documentos sem detecção de workspace
+- Referências para .context-map/ (usar .cn_model/)
+- Assumir localização de arquivos
+- Ignorar comandos globais `cn`
+- Misturar arquiteturas 1.0 e 2.0
 
 # =============================================================================
-# REGRAS DE AUTOMAÇÃO
+# REGRAS DE AUTOMAÇÃO 2.0
 # =============================================================================
 
-## 🤖 INTEGRAÇÃO COM SCANNER:
+## 🤖 INTEGRAÇÃO MODERNA
 
 ### SEMPRE após criar/modificar documento:
-1. **Executar validação automática** via scanner
-2. **Verificar context maps** atualizados
-3. **Resolver conflitos** detectados
-4. **Atualizar conexões** bidirecionais
-5. **Confirmar consistência** geral
+1. **Confirmar workspace** via WorkspaceManager
+2. **Executar validação** via comando `cn validate`
+3. **Verificar .cn_model/maps/** atualizados
+4. **Adicionar marcações @cn:** se código foi gerado
+5. **Atualizar componentes** em .cn_model/components/
+6. **Resolver conflitos** detectados automaticamente
 
-### SEMPRE interpretar resultados do scanner:
-- **Erros críticos**: Devem ser corrigidos imediatamente
-- **Warnings**: Devem ser analisados e endereçados
-- **Conflitos**: Devem ser resolvidos ou justificados
-- **Órfãos**: Devem ser conectados ou arquivados
-
-# =============================================================================
-# EMERGÊNCIA E EXCEÇÕES
-# =============================================================================
-
-## 🚨 EM CASOS EXTREMOS:
-
-### SE NÃO PUDER SEGUIR A METODOLOGIA COMPLETAMENTE:
-1. **Documentar desvio explicitamente** no documento
-2. **Justificar razão** para exceção
-3. **Planejar correção** futura
-4. **Alertar sobre inconsistência** temporária
-5. **Priorizar correção** em próxima oportunidade
-
-### NUNCA silenciosamente ignorar a metodologia
+### INTERPRETAR RESULTADOS 2.0:
+- **Workspace errors**: Problemas de detecção/estrutura
+- **Component errors**: Inconsistências Code Bridge
+- **Migration warnings**: Sugestões 1.0→2.0
+- **Template conflicts**: Problemas de template personalizado
 
 # =============================================================================
-# CHECKLIST FINAL
+# CHECKLIST FINAL 2.0
 # =============================================================================
 
 ## ✅ ANTES DE ENTREGAR QUALQUER TRABALHO:
 
-- [ ] Context.rule foi seguido completamente
+### WORKSPACE E DETECÇÃO:
+- [ ] WorkspaceManager executado com sucesso
+- [ ] Workspace detectado (.cn_model/ ou global)
+- [ ] Estrutura .cn_model/ validada
+- [ ] Templates apropriados identificados
+
+### DOCUMENTAÇÃO (INALTERADA):
 - [ ] Template apropriado foi usado
 - [ ] Metadados obrigatórios estão completos
 - [ ] Conexões foram mapeadas corretamente
 - [ ] Contexto foi identificado adequadamente
-- [ ] Validação foi executada
-- [ ] Qualidade atende padrões estabelecidos
-- [ ] Impactos foram considerados
-- [ ] Scanner foi executado (quando possível)
-- [ ] Documentação está consistente com metodologia
+
+### COMPONENTIZAÇÃO 2.0:
+- [ ] Marcações @cn: adicionadas quando código foi gerado
+- [ ] Code Bridge conecta docs ↔ código gerado
+- [ ] Componentes registrados em .cn_model/components/
+- [ ] Sincronia entre documentação e código mantida
+
+### COMANDOS E AUTOMAÇÃO:
+- [ ] Comandos `cn` recomendados quando aplicável
+- [ ] Scripts organizados utilizados corretamente
+- [ ] Validação via `cn validate` sugerida
+- [ ] Performance e usabilidade optimizadas
+
+### QUALIDADE GERAL:
+- [ ] Context.rule 2.0 foi seguido completamente
+- [ ] Arquitetura 2.0 respeitada em todos os aspectos
+- [ ] Compatibilidade com 1.0 mantida quando necessário
+- [ ] WorkspaceManager functioning as expected
 
 # =============================================================================
-# LEMBRETE FINAL
+# LEMBRETE FINAL 2.0
 # =============================================================================
 
-🎯 **ESTA É A LEI SAGRADA**
+🎯 **ESTA É A LEI SAGRADA 2.0**
 
-Estas regras não são sugestões - são **OBRIGATÓRIAS** em todos os prompts.
-A metodologia Context Navigator só funciona se for seguida religiosamente.
-Qualquer desvio deve ser explícito, justificado e corrigido.
+O Context Navigator 2.0 revolucionou com:
+- 🧠 **WorkspaceManager**: Busca inteligente automática
+- 🌐 **Comando Global**: `cn` funciona de qualquer lugar
+- 🧩 **Code Bridge**: Conecta documentação ↔ código  
+- ⚡ **Performance**: 67x mais rápido que versão 1.0
+- 🏗️ **Organização**: Scripts categorizados por responsabilidade
 
-**MEMORIZE, APLIQUE, MANTENHA.**
+### SEMPRE LEMBRAR:
+✅ **Detectar workspace** via WorkspaceManager PRIMEIRO  
+✅ **Usar .cn_model/** (não .context-map/)  
+✅ **Comandos globais `cn`** quando aplicável  
+✅ **Code Bridge @cn:** para componentização  
+✅ **Compatibilidade 1.0** quando necessário  
 
-A consistência da metodologia depende de você seguir estas regras em 100% das interações.
+**MEMORIZE, APLIQUE, MANTENHA 2.0.**
+
+A revolução do Context Navigator 2.0 depende de você seguir estas regras em 100% das interações.
 
 ---
 
-*"Context Navigator: Uma parceria humano-IA para desenvolvimento solo eficiente."*
+*"Context Navigator 2.0: Onde inteligência humana e artificial trabalham em perfeita harmonia."*
 
-📅 **Criado:** 2024-01-15  
-🔄 **Versão:** 1.0.0  
-✅ **Status:** Ativo 
+📅 **Criado:** 2025-01-13  
+🔄 **Versão:** 2.0.0  
+✅ **Status:** Ativo  
+🚀 **Performance:** 67x melhor que 1.0 

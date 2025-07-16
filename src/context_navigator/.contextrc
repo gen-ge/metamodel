@@ -1,26 +1,74 @@
-# 🎯 Context Navigator - Configuração Metodológica
+# 🎯 Context Navigator 2.0 - Configuração Metodológica
 # Arquivo central que define todas as convenções imutáveis da metodologia
-# Versão: 1.0.0
-# Data: 2024-01-15
+# Versão: 2.0.0
+# Data: 2025-01-13
+# Arquitetura: Global + WorkspaceManager + Code Bridge
 
 # =============================================================================
-# METADADOS DO PROJETO
+# METADADOS DO PROJETO - ARQUITETURA 2.0
 # =============================================================================
 
 project:
   name: "Context Navigator"
-  version: "1.0.0"
-  description: "Metodologia de parceria humano-IA para documentação context-aware"
+  version: "2.0.0"
+  description: "Metodologia inteligente de parceria humano-IA para documentação context-aware"
   author: "Context Navigator Team"
   created_date: "2024-01-15"
+  last_major_update: "2025-01-13"
 
 methodology:
   type: "context-aware-documentation"
   scope: "human-ai-partnership"
   target: "solo-development"
+  architecture: "global-workspace-manager"
 
 # =============================================================================
-# TIPOS DE DOCUMENTO (IMUTÁVEIS)
+# ARQUITETURA 2.0 - WORKSPACE MANAGER
+# =============================================================================
+
+workspace_architecture:
+  version: "2.0"
+  approach: "intelligent-detection"
+  structure: ".cn_model"
+
+  # Hierarquia de busca inteligente (obrigatória)
+  detection_hierarchy:
+    local_workspace:
+      priority: 1
+      pattern: ".cn_model/workspace.yml"
+      scope: "current_and_parent_directories"
+      recursive: true
+      max_depth: 10
+
+    global_installation:
+      priority: 2
+      path: "~/.local/share/context-navigator/"
+      fallback_path: "~/.context-navigator/"
+      scope: "system_wide"
+
+    compatibility_mode:
+      priority: 3
+      pattern: ".contextrc"
+      legacy_support: true
+      auto_migrate: true
+
+  # Estrutura de workspace 2.0
+  workspace_structure:
+    config_file: "workspace.yml"
+    components_dir: "components/"
+    templates_dir: "templates/"
+    maps_dir: "maps/"
+    cache_dir: "cache/"
+
+    # Arquivos de mapeamento
+    maps_files:
+      index: "maps/index.yml"
+      connections: "maps/connections.yml"
+      conflicts: "maps/conflicts.yml"
+      architecture: "maps/architecture.yml"
+
+# =============================================================================
+# TIPOS DE DOCUMENTO (IMUTÁVEIS - MANTIDOS DA 1.0)
 # =============================================================================
 
 document_types:
@@ -68,7 +116,7 @@ document_types:
     estimated_usage: 5
 
 # =============================================================================
-# SISTEMA DE CONTEXTOS (HIERÁRQUICO + ESPECIALIZADO)
+# SISTEMA DE CONTEXTOS (HIERÁRQUICO + ESPECIALIZADO - MANTIDO DA 1.0)
 # =============================================================================
 
 contexts:
@@ -132,7 +180,48 @@ contexts:
       examples: ["views/", "components/", "pages/", "layouts/", "styles/"]
 
 # =============================================================================
-# METADADOS OBRIGATÓRIOS E OPCIONAIS
+# CODE BRIDGE - COMPONENTIZAÇÃO 2.0 (NOVA FUNCIONALIDADE)
+# =============================================================================
+
+code_bridge:
+  version: "2.0"
+  enabled: true
+  description: "Sistema de conexão bidirecional entre documentação e código"
+
+  # Protocolo de marcações @cn:
+  marking_protocol:
+    prefix: "@cn:"
+    delimiter_start: "===== CONTEXT NAVIGATOR CODE BRIDGE ====="
+    delimiter_end: "============================================"
+
+    # Campos obrigatórios
+    required_fields:
+      component: "nome-componente"
+      doc: "arquivo-documentacao.md"
+      context_level: ["c1_root", "c2_module", "c3_component"]
+      context_type: ["core", "api", "data", "ui", "infra", "shared"]
+      purpose: "Descrição clara do propósito"
+      memory_aid: "Lembrete para humanos e IA"
+
+    # Campos opcionais
+    optional_fields:
+      depends_on: "Lista de documentos dependentes"
+      impacts: "Lista de componentes/módulos impactados"
+      uses: "Lista de ferramentas/bibliotecas utilizadas"
+      provides: "Lista de funcionalidades/APIs fornecidas"
+      owner: "Responsável pelo componente"
+      last_updated: "Data da última atualização"
+      status: ["active", "deprecated", "experimental"]
+
+  # Validação de consistência
+  validation:
+    verify_referenced_docs: true
+    validate_context_hierarchy: true
+    check_component_uniqueness: true
+    monitor_documentation_sync: true
+
+# =============================================================================
+# METADADOS OBRIGATÓRIOS E OPCIONAIS (MANTIDOS DA 1.0)
 # =============================================================================
 
 metadata:
@@ -220,7 +309,7 @@ metadata:
       values: ["never", "monthly", "quarterly", "yearly"]
 
 # =============================================================================
-# TIPOS DE CONEXÕES ENTRE DOCUMENTOS
+# TIPOS DE CONEXÕES ENTRE DOCUMENTOS (MANTIDOS DA 1.0)
 # =============================================================================
 
 connection_types:
@@ -255,11 +344,11 @@ connection_types:
     weight: "low"
 
 # =============================================================================
-# REGRAS DE VALIDAÇÃO
+# REGRAS DE VALIDAÇÃO (EXPANDIDAS PARA 2.0)
 # =============================================================================
 
 validation_rules:
-  # Validação de metadados
+  # Validação de metadados (mantida)
   metadata_validation:
     required_fields_present: true
     valid_doc_type: true
@@ -268,28 +357,43 @@ validation_rules:
     valid_dates: true
     valid_connections: true
 
-  # Validação de conexões
+  # Validação de conexões (mantida)
   connection_validation:
     no_self_references: true
     no_circular_dependencies: true
     valid_connection_targets: true
     consistent_bidirectional: true
 
-  # Validação de contexto
+  # Validação de contexto (mantida)
   context_validation:
     consistent_context_level: true
     consistent_context_type: true
     valid_context_hierarchy: true
 
-  # Validação de template
+  # Validação de template (mantida)
   template_validation:
     correct_template_usage: true
     required_sections_present: true
     valid_front_matter: true
     valid_inline_metadata: true
 
+  # Validação de workspace (nova - 2.0)
+  workspace_validation:
+    workspace_detected: true
+    workspace_structure_valid: true
+    workspace_permissions_ok: true
+    maps_directory_exists: true
+
+  # Validação de Code Bridge (nova - 2.0)
+  code_bridge_validation:
+    marking_syntax_valid: true
+    required_fields_present: true
+    referenced_docs_exist: true
+    context_consistency: true
+    component_uniqueness: true
+
 # =============================================================================
-# DETECÇÃO DE CONFLITOS
+# DETECÇÃO DE CONFLITOS (EXPANDIDA PARA 2.0)
 # =============================================================================
 
 conflict_detection:
@@ -324,8 +428,24 @@ conflict_detection:
     severity: "info"
     max_age_days: 90
 
+  # Novos conflitos - 2.0
+  workspace_conflicts:
+    enabled: true
+    description: "Conflitos de workspace ou estrutura"
+    severity: "error"
+
+  code_bridge_conflicts:
+    enabled: true
+    description: "Conflitos em marcações Code Bridge"
+    severity: "warning"
+
+  component_duplicates:
+    enabled: true
+    description: "Componentes duplicados ou inconsistentes"
+    severity: "error"
+
 # =============================================================================
-# MAPEAMENTO DE RELACIONAMENTOS
+# MAPEAMENTO DE RELACIONAMENTOS (EXPANDIDO PARA 2.0)
 # =============================================================================
 
 relationship_mapping:
@@ -348,26 +468,46 @@ relationship_mapping:
     anti_patterns: true
     architectural_patterns: true
 
+  # Novo - 2.0: Análise de componentes
+  component_analysis:
+    code_documentation_mapping: true
+    component_dependency_analysis: true
+    cross_module_relationships: true
+    orphaned_components: true
+
 # =============================================================================
-# CONFIGURAÇÃO DO SCANNER
+# CONFIGURAÇÃO DO SCANNER (ATUALIZADA PARA 2.0)
 # =============================================================================
 
 scanner:
-  # Diretórios para escaneamento (relativos a .context-navigator/)
+  # Diretórios para escaneamento (atualizados para .cn_model/)
   directories:
     base_path: "."
     templates_path: "templates"
     docs_path: "docs"
     examples_path: "examples"
-    context_maps_path: ".context-navigator/context-map"
+    # Arquitetura 2.0
+    workspace_path: ".cn_model"
+    components_path: ".cn_model/components"
+    maps_path: ".cn_model/maps"
+    cache_path: ".cn_model/cache"
+    # Compatibilidade 1.0
+    legacy_context_maps_path: ".context-navigator/context-map"
 
-  # Padrões de arquivo
+  # Padrões de arquivo (expandidos para 2.0)
   file_patterns:
     markdown: "*.md"
     yaml: "*.yml"
     json: "*.json"
+    workspace_config: "workspace.yml"
+    # Code Bridge scanning
+    python: "*.py"
+    javascript: "*.js"
+    typescript: "*.ts"
+    java: "*.java"
+    csharp: "*.cs"
 
-  # Configuração de parsing
+  # Configuração de parsing (expandida para Code Bridge)
   parsing:
     front_matter_delimiter: "---"
     inline_metadata_pattern: "<!-- CONTEXT_META"
@@ -375,41 +515,120 @@ scanner:
       - "\\[([^\\]]+)\\]"
       - "\\{\\{([^\\}]+)\\}\\}"
       - "@([a-zA-Z0-9_-]+)"
+    # Code Bridge patterns
+    code_bridge_patterns:
+      - "@cn:component\\s+([a-zA-Z0-9_-]+)"
+      - "@cn:doc\\s+([a-zA-Z0-9_.-/]+)"
+      - "@cn:context-level\\s+(c1_root|c2_module|c3_component)"
+      - "@cn:context-type\\s+(core|api|data|ui|infra|shared)"
 
-  # Configuração de saída
+  # Configuração de saída (atualizada para 2.0)
   output:
     context_maps_format: "yaml"
     validation_report_format: "json"
     conflict_report_format: "markdown"
+    # Novos outputs 2.0
+    component_map_format: "yaml"
+    workspace_report_format: "yaml"
 
 # =============================================================================
-# CONFIGURAÇÃO DA IA
+# SCRIPTS ORGANIZADOS - ARQUITETURA 2.0
+# =============================================================================
+
+scripts_organization:
+  version: "2.0"
+  structure: "responsibility-based"
+
+  # Organização por responsabilidade
+  categories:
+    core:
+      description: "Processamento essencial"
+      scripts:
+        - "context_scanner.py"
+        - "context_engine.py"
+      responsibilities: ["scanning", "core_processing", "workspace_management"]
+
+    validation:
+      description: "Validação de qualidade"
+      scripts:
+        - "template_validator.py"
+        - "cn_consistency_validator.py"
+        - "metrics_validator.py"
+      responsibilities: ["quality_validation", "consistency_checks", "metrics"]
+
+    analysis:
+      description: "Análise avançada"
+      scripts:
+        - "pattern_detector.py"
+        - "conflict_detector.py"
+        - "impact_analyzer.py"
+        - "context_advisor.py"
+      responsibilities:
+        [
+          "pattern_analysis",
+          "conflict_detection",
+          "impact_analysis",
+          "advisory",
+        ]
+
+    tools:
+      description: "Utilitários"
+      scripts:
+        - "cn_component_explorer.py"
+        - "cn_component_parser.py"
+        - "context_demo.py"
+        - "cn_global_launcher.py"
+      responsibilities:
+        ["exploration", "parsing", "demonstration", "global_access"]
+
+  # Comando global
+  global_command:
+    name: "cn"
+    path: "~/.local/bin/cn"
+    launcher: "cn_global_launcher.py"
+    workspace_detection: true
+
+# =============================================================================
+# CONFIGURAÇÃO DA IA (ATUALIZADA PARA 2.0)
 # =============================================================================
 
 ai_configuration:
-  # Protocolo obrigatório
+  # Protocolo obrigatório (atualizado para 2.0)
   protocol:
     always_load_context_rule: true
+    always_detect_workspace: true # NOVO - 2.0
     always_check_context_maps: true
     always_validate_before_action: true
     always_update_connections: true
+    always_consider_code_bridge: true # NOVO - 2.0
 
-  # Comportamento padrão
+  # Comportamento padrão (expandido)
   default_behavior:
     follow_templates_strictly: true
     maintain_metadata_consistency: true
     detect_conflicts_automatically: true
     suggest_improvements: true
+    use_workspace_manager: true # NOVO - 2.0
+    save_to_cn_model: true # NOVO - 2.0
 
-  # Regras de atualização
+  # Regras de atualização (expandidas)
   update_rules:
     auto_update_last_modified: true
     auto_update_connections: true
     auto_detect_context_changes: true
     validate_after_updates: true
+    update_component_maps: true # NOVO - 2.0
+    maintain_code_bridge_sync: true # NOVO - 2.0
+
+  # WorkspaceManager protocolo (NOVO - 2.0)
+  workspace_manager_protocol:
+    always_detect_before_processing: true
+    prefer_local_over_global: true
+    validate_workspace_structure: true
+    handle_migration_gracefully: true
 
 # =============================================================================
-# CONFIGURAÇÃO DE EXPANSÃO
+# CONFIGURAÇÃO DE EXPANSÃO (ATUALIZADA PARA 2.0)
 # =============================================================================
 
 extensibility:
@@ -436,49 +655,89 @@ extensibility:
     preserve_required_metadata: true
     validate_structure: true
 
+  # Extensões Code Bridge (NOVO - 2.0)
+  code_bridge_extensions:
+    enabled: true
+    support_new_languages: true
+    custom_marking_patterns: true
+    plugin_system: false # Planejado para versões futuras
+
 # =============================================================================
-# MÉTRICAS E MONITORAMENTO
+# MÉTRICAS E MONITORAMENTO (EXPANDIDAS PARA 2.0)
 # =============================================================================
 
 metrics:
-  # Métricas de qualidade
+  # Métricas de qualidade (mantidas)
   quality_metrics:
     metadata_completeness: true
     connection_accuracy: true
     context_consistency: true
     template_compliance: true
 
-  # Métricas de uso
+  # Métricas de uso (mantidas)
   usage_metrics:
     document_type_distribution: true
     context_usage_patterns: true
     connection_patterns: true
     update_frequency: true
 
-  # Métricas de eficiência
+  # Métricas de eficiência (expandidas)
   efficiency_metrics:
     scan_time: true
     validation_time: true
     conflict_resolution_time: true
     context_switch_time: true
+    # Novas métricas 2.0
+    workspace_detection_time: true
+    component_parsing_time: true
+    global_command_response_time: true
+
+  # Métricas de Code Bridge (NOVO - 2.0)
+  code_bridge_metrics:
+    components_documented: true
+    documentation_code_sync: true
+    orphaned_markings: true
+    component_coverage: true
+
+  # Metas de performance (NOVO - 2.0)
+  performance_targets:
+    scanner_time: "< 5s" # Meta: ~73ms atual
+    workspace_detection: "< 100ms" # Meta: ~50ms atual
+    template_loading: "< 200ms" # Meta: ~100ms atual
+    memory_usage: "< 50MB" # Meta: ~25MB atual
+    startup_time: "< 1s" # Meta: ~300ms atual
 
 # =============================================================================
-# VERSIONAMENTO
+# VERSIONAMENTO (ATUALIZADO PARA 2.0)
 # =============================================================================
 
 versioning:
-  schema_version: "1.0.0"
+  schema_version: "2.0.0"
   backward_compatibility: true
   migration_support: true
   changelog_required: true
+
+  # Compatibilidade entre versões
+  compatibility:
+    support_1_0_structures: true
+    auto_migrate_1_to_2: true
+    preserve_1_0_data: true
+    fallback_to_legacy: true
 
   breaking_changes:
     require_approval: true
     require_migration_plan: true
     require_documentation_update: true
 
+  # Migração 1.0 → 2.0
+  migration:
+    contextrc_to_workspace_yml: true
+    context_map_to_cn_model: true
+    scripts_reorganization: true
+    global_installation: true
+
 # =============================================================================
-# CONFIGURAÇÃO DE DESENVOLVIMENTO
+# CONFIGURAÇÃO DE DESENVOLVIMENTO (EXPANDIDA PARA 2.0)
 # =============================================================================
 
 development:
@@ -498,8 +757,13 @@ development:
   backup_before_changes: true
   backup_retention_days: 30
 
+  # Desenvolvimento 2.0
+  workspace_manager_testing: true
+  code_bridge_testing: true
+  migration_testing: true
+
 # =============================================================================
-# CONFIGURAÇÃO DE PRODUÇÃO
+# CONFIGURAÇÃO DE PRODUÇÃO (EXPANDIDA PARA 2.0)
 # =============================================================================
 
 production:
@@ -517,15 +781,22 @@ production:
   performance_monitoring: true
   error_tracking: true
 
+  # Produção 2.0
+  workspace_health_monitoring: true
+  global_command_monitoring: true
+  component_sync_monitoring: true
+
 # =============================================================================
-# DOCUMENTAÇÃO E AJUDA
+# DOCUMENTAÇÃO E AJUDA (ATUALIZADA PARA 2.0)
 # =============================================================================
 
 help:
-  # Documentação
-  user_manual: "docs/MANUAL_HUMANO.md"
-  ai_manual: "docs/MANUAL_IA.md"
-  conventions: "docs/CONVENTIONS.md"
+  # Documentação (atualizadas para 2.0)
+  user_manual: "docs/c1-systems/MANUAL_HUMANO.md"
+  ai_manual: "docs/c1-systems/MANUAL_IA.md"
+  conventions: "docs/c1-systems/CONVENTIONS.md"
+  architecture_overview: "docs/c1-systems/ARCHITECTURE_2_0_OVERVIEW.md"
+  installation_guide: "docs/c1-systems/INSTALACAO_GLOBAL.md"
 
   # Exemplos
   example_documents: "examples/"
@@ -535,16 +806,31 @@ help:
   troubleshooting: "docs/TROUBLESHOOTING.md"
   faq: "docs/FAQ.md"
   changelog: "docs/CHANGELOG.md"
+  migration_guide: "docs/MIGRATION_1_0_TO_2_0.md"
+
+  # Novos guias 2.0
+  code_bridge_guide: "docs/c3-components/CODE_BRIDGE_GUIDE.md"
+  workspace_manager_guide: "docs/c2-modules/WORKSPACE_MANAGER_GUIDE.md"
+  global_installation_guide: "docs/c1-systems/INSTALACAO_GLOBAL.md"
 
 # =============================================================================
-# CONFIGURAÇÃO FINAL
+# CONFIGURAÇÃO FINAL - ARQUITETURA 2.0
 # =============================================================================
 
 # Checksum para validação de integridade
-checksum: "context-navigator-v1.0.0-foundation"
+checksum: "context-navigator-v2.0.0-workspace-manager-code-bridge"
 
 # Data de última modificação
-last_modified: "2024-01-15T10:00:00Z"
+last_modified: "2025-01-13T10:00:00Z"
 
 # Assinatura da configuração
-signature: "context-navigator-foundation-config"
+signature: "context-navigator-2.0-foundation-config"
+
+# Arquitetura
+architecture_level: "2.0"
+features:
+  ["workspace-manager", "code-bridge", "global-command", "organized-scripts"]
+
+# Status de migração
+migration_status: "complete"
+compatibility_mode: "enabled"

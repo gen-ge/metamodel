@@ -65,41 +65,60 @@ class TemplateValidator:
             base_path: Caminho base do projeto
         """
         self.base_path = Path(base_path)
-        self.config = {}
         
-        # Carregar configuração
-        self._load_config()
+        # NOVO: Usar WorkspaceManager para detectar workspace
+        self._init_with_workspace_manager()
         
         # Inicializar regras de validação por template
         self._init_validation_rules()
         
-    def _load_config(self) -> None:
-        """Carrega configuração do .contextrc"""
-        # Procurar .contextrc em múltiplas localizações
-        config_locations = [
-            self.base_path / ".contextrc",  # Raiz do workspace
-            self.base_path / ".context-navigator" / ".contextrc"  # Pasta de instalação
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
+        try:
+            from ..core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager, Workspace
+        
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            logger.error("❌ Context Navigator workspace não encontrado")
+            logger.error("💡 Execute 'cn init' para configurar este diretório")
+            sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.output_dir = current_workspace.root_path / ".cn_model"
+        
+        # Configuração vem do workspace
+        self.config = current_workspace.configuration
+        
+        # Templates ficam na instalação global
+        self.templates_path = self._get_global_templates_path()
+        
+        logger.info(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
+        
+    def _get_global_templates_path(self) -> Path:
+        """Detecta onde estão os templates na instalação global"""
+        possible_locations = [
+            Path("/opt/context-navigator/templates"),
+            Path.home() / ".local" / "share" / "context-navigator" / "templates",
         ]
         
-        config_file = None
-        for location in config_locations:
+        for location in possible_locations:
             if location.exists():
-                config_file = location
-                break
+                return location
         
-        if not config_file:
-            logger.error("Arquivo .contextrc não encontrado em nenhuma localização:")
-            for location in config_locations:
-                logger.error(f"  - {location}")
-            return
-            
-        try:
-            with open(config_file, 'r', encoding='utf-8') as f:
-                self.config = yaml.safe_load(f)
-            logger.info(f"Configuração carregada com sucesso de {config_file}")
-        except Exception as e:
-            logger.error(f"Erro ao carregar configuração: {e}")
-            
+        # Fallback para desenvolvimento
+        return Path(__file__).parent.parent / "templates"
+        
     def _init_validation_rules(self) -> None:
         """Inicializa regras de validação específicas por template"""
         
@@ -932,7 +951,24 @@ def main():
     
     args = parser.parse_args()
     
-    validator = TemplateValidator(args.path)
+    # Detectar workspace usando WorkspaceManager
+    try:
+        from ..core.workspace_manager import WorkspaceManager
+    except ImportError:
+        # Fallback para desenvolvimento
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from core.workspace_manager import WorkspaceManager
+    
+    workspace_manager = WorkspaceManager()
+    current_workspace = workspace_manager.detect_current_workspace()
+    
+    if not current_workspace:
+        print("❌ Context Navigator workspace não encontrado")
+        print("💡 Execute 'cn init' para configurar este diretório")
+        return 1
+    
+    validator = TemplateValidator()
     
     if args.file:
         file_path = Path(args.file)
@@ -969,7 +1005,8 @@ def main():
             print(f"Arquivo não encontrado: {file_path}")
             
     elif args.templates:
-        templates_path = Path(args.path) / "templates"
+        # Usar templates path do workspace
+        templates_path = validator.templates_path
         if templates_path.exists():
             for template_file in templates_path.glob("*.md"):
                 print(f"\n🔍 Validando: {template_file.name}")

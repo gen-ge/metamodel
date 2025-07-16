@@ -8,22 +8,23 @@ status: "active"
 connections:
   references: ["MANUAL_IA.md"]
   impacts: ["context_scanner.py", "context_engine.py"]
-  depends_on: [".contextrc", "context.rule"]
+  depends_on: ["workspace.yml", "context.rule"]
 created_date: "2025-01-13"
 last_updated: "2025-01-13"
 owner: "Context Navigator Team"
-tags: ["manual", "rule", "ai-protocol", "optimized"]
+tags: ["manual", "rule", "ai-protocol", "optimized", "2.0"]
+version: "2.0"
 ---
 
-# 🤖 Context Navigator - Manual da IA (Otimizado)
+# 🤖 Context Navigator 2.0 - Manual da IA (Otimizado)
 
-## 🎯 Protocolo Obrigatório
+## 🎯 Protocolo Obrigatório 2.0
 
 **SEMPRE EXECUTE ANTES DE RESPONDER:**
 
 ```
 1. CARREGAR context.rule
-2. CARREGAR .context-map/index.yml
+2. CARREGAR .cn_model/maps/index.yml (via WorkspaceManager)
 3. IDENTIFICAR template apropriado
 4. VALIDAR contexto da requisição
 5. APLICAR template específico
@@ -350,11 +351,12 @@ PALAVRAS-CHAVE → TEMPLATE:
 
 ---
 
-## 🚨 Regras Críticas
+## 🚨 Regras Críticas 2.0
 
 ### **SEMPRE:**
 
 - ✅ Carregar context.rule antes de responder
+- ✅ Detectar workspace via WorkspaceManager (.cn_model/)
 - ✅ Usar template exato (não modificar estrutura)
 - ✅ Incluir todos os metadados obrigatórios
 - ✅ Validar conexões existentes
@@ -388,14 +390,56 @@ PALAVRAS-CHAVE → TEMPLATE:
 
 ---
 
-## 🎯 Protocolo de Resposta
+## 🏗️ Workspace e Componentização 2.0
+
+### **Workspace Detection (WorkspaceManager)**
+
+```yaml
+SEMPRE verificar:
+1. .cn_model/workspace.yml (diretório atual)
+2. ../.cn_model/workspace.yml (diretórios pais)
+3. ~/.local/share/context-navigator/ (global)
+4. ~/.context-navigator/ (fallback 1.0)
+```
+
+### **Code Bridge (@cn:)**
+
+```yaml
+# Conectar documentação ↔ código
+# ===== CONTEXT NAVIGATOR CODE BRIDGE =====
+# @cn:component user-authentication
+# @cn:doc decisions/auth-architecture.md
+# @cn:context-level c2_module
+# @cn:context-type core
+# @cn:purpose "Sistema de autenticação"
+# ============================================
+```
+
+### **Saves em .cn_model/ (Obrigatório)**
+
+```yaml
+SEMPRE salvar em:
+  - .cn_model/maps/index.yml
+  - .cn_model/maps/connections.yml
+  - .cn_model/maps/conflicts.yml
+  - .cn_model/components/
+
+NUNCA salvar em:
+  - .context-map/ (arquitetura 1.0)
+  - .contextrc (arquitetura 1.0)
+```
+
+---
+
+## 🎯 Protocolo de Resposta 2.0
 
 ### **Formato Padrão:**
 
 ```markdown
-## [Confirmação]
+## [Confirmação 2.0]
 
 ✅ context.rule: CARREGADO
+✅ workspace: DETECTADO (.cn_model/)
 ✅ template: [TIPO]
 ✅ validação: APROVADA
 
@@ -403,15 +447,16 @@ PALAVRAS-CHAVE → TEMPLATE:
 
 [Conteúdo seguindo template]
 
-## [Validação]
+## [Validação Final]
 
 - Estrutura: ✅ COMPLETA
 - Metadados: ✅ VÁLIDOS
+- Workspace: ✅ .cn_model/
 - Qualidade: ✅ APROVADA
 ```
 
 ---
 
-**🤖 Manual otimizado para uso diário eficiente.**
+**🤖 Manual 2.0 otimizado para uso diário eficiente com WorkspaceManager e componentização.**
 
-_Context Navigator: Disciplina sem complexidade desnecessária._
+_Context Navigator 2.0: Disciplina inteligente sem complexidade desnecessária._

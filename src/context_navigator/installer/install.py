@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🚀 Context Navigator - Instalador
-Instala o Context Navigator em qualquer workspace de forma isolada
+🚀 Context Navigator 2.0.0 - Instalador Global
+Instala o Context Navigator globalmente no sistema
 """
 
 import os
@@ -15,47 +15,48 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 class ContextNavigatorInstaller:
-    def __init__(self, target_path: str = ".", global_install: bool = False):
+    def __init__(self, global_install: bool = True):
         """
-        Inicializa o instalador
+        Inicializa o instalador global
         
         Args:
-            target_path: Caminho do workspace onde instalar (padrão: diretório atual)
-            global_install: Se True, instala globalmente no sistema
+            global_install: Sempre True na v2.0.0 (instalação apenas global)
         """
-        self.global_install = global_install
-        self.target_path = Path(target_path).resolve()
+        self.global_install = True  # v2.0.0 é sempre global
         
-        if global_install:
-            # Instalação global
+        # Diretório de instalação global
+        self.install_dir = Path("/opt/context-navigator")
+        self.bin_dir = Path("/usr/local/bin")
+        
+        # Se não tiver permissão, usar instalação do usuário
+        if not self._can_write_to_system():
             self.install_dir = Path.home() / ".local" / "share" / "context-navigator"
             self.bin_dir = Path.home() / ".local" / "bin"
-        else:
-            # Instalação local
-            self.install_dir = self.target_path / ".context-navigator"
-            self.bin_dir = self.target_path
             
-        # Detectar se estamos em um pacote extraído ou em desenvolvimento
+        # Detectar se estamos em um pacote extraído
         installer_path = Path(__file__).parent.resolve()
         
-        # Se install.py está na raiz de um pacote extraído, source_dir é o diretório do pacote
+        # Se install.py está na raiz de um pacote extraído
         if (installer_path.parent / "source").exists():
-            self.source_dir = installer_path.parent
+            self.source_dir = installer_path.parent / "source"
         else:
             # Estamos em desenvolvimento, usar estrutura src/
             self.source_dir = installer_path
         
         # Versão do Context Navigator
-        self.version = "1.1.0"
+        self.version = "2.0.0"
         
-        print(f"🎯 Context Navigator Installer v{self.version}")
-        if global_install:
-            print(f"🌐 Instalação Global")
-            print(f"📦 Instalando em: {self.install_dir}")
-            print(f"🔧 Launcher em: {self.bin_dir}")
-        else:
-            print(f"📁 Instalação Local - Workspace: {self.target_path}")
-            print(f"📦 Instalando em: {self.install_dir}")
+        print(f"🎯 Context Navigator Global Installer v{self.version}")
+        print(f"🌐 Instalação Global")
+        print(f"📦 Instalando em: {self.install_dir}")
+        print(f"🔧 Launcher em: {self.bin_dir}/cn")
+        
+    def _can_write_to_system(self) -> bool:
+        """Verifica se pode escrever em diretórios do sistema"""
+        try:
+            return os.access("/opt", os.W_OK) and os.access("/usr/local/bin", os.W_OK)
+        except:
+            return False
         
     def check_prerequisites(self) -> bool:
         """Verifica pré-requisitos do sistema"""
@@ -68,10 +69,10 @@ class ContextNavigatorInstaller:
         print(f"✅ Python {sys.version_info.major}.{sys.version_info.minor}")
         
         # Verificar se é um workspace válido
-        if not self.target_path.exists():
-            print(f"❌ Workspace não encontrado: {self.target_path}")
+        if not self.source_dir.exists():
+            print(f"❌ Workspace não encontrado: {self.source_dir}")
             return False
-        print(f"✅ Workspace válido: {self.target_path}")
+        print(f"✅ Workspace válido: {self.source_dir}")
         
         # Verificar se source dir existe
         if not self.source_dir.exists():
@@ -85,7 +86,7 @@ class ContextNavigatorInstaller:
         """Faz backup de instalação existente"""
         if self.install_dir.exists():
             print(f"\n🔄 Instalação existente encontrada...")
-            backup_dir = self.target_path / f".context-navigator-backup-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+            backup_dir = self.source_dir / f".context-navigator-backup-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
             
             try:
                 shutil.move(str(self.install_dir), str(backup_dir))
@@ -138,22 +139,20 @@ class ContextNavigatorInstaller:
             "scripts/": "scripts/",
             # Templates
             "templates/": "templates/",
-            # Core (não vai para instalação final)
-            # "core/": "core/",
+            # Core - Módulo global da arquitetura 2.0.0
+            "core/": "core/",
             # Configuração
             "context.rule": "context.rule",
             ".contextrc": ".contextrc",
             # CLI
-            "cn_cli.py": "cn_cli.py"
+            "cn_cli_legacy.py": "cn_cli_legacy.py"
         }
         
         # Arquivos de documentação (do root do pacote)
         docs_files = {
             "docs/": "docs/",
             "examples/": "examples/",
-            "README.md": "README.md",
-            "QUICK_START.md": "QUICK_START.md",
-            "INSTALL.md": "INSTALL.md"
+            "README.md": "README.md"
         }
         
         try:
@@ -204,7 +203,7 @@ class ContextNavigatorInstaller:
             version_info = {
                 "version": self.version,
                 "installed_at": datetime.now().isoformat(),
-                "workspace": str(self.target_path),
+                "workspace": str(self.source_dir),
                 "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
             }
             
@@ -233,34 +232,26 @@ class ContextNavigatorInstaller:
         """Cria launcher e documentação - Local ou Global"""
         print(f"\n📋 Criando launcher e documentação...")
         
-        if self.global_install:
-            return self.create_global_launcher()
+        # Criar diretório bin se não existir
+        self.bin_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Copiar launcher global
+        source_launcher = self.source_dir / "source" / "scripts" / "tools" / "cn_global_launcher.py"
+        target_launcher = self.bin_dir / "cn"
+        
+        if source_launcher.exists():
+            import shutil
+            shutil.copy2(source_launcher, target_launcher)
+            # Tornar executável
+            import os
+            os.chmod(target_launcher, 0o755)
+            print(f"✅ Launcher global criado: {target_launcher}")
         else:
-            return self.create_local_launcher()
-    
-    def create_global_launcher(self) -> bool:
-        """Cria launcher global no PATH"""
-        try:
-            # Criar diretório bin se não existir
-            self.bin_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Copiar launcher global
-            source_launcher = self.source_dir / "source" / "scripts" / "cn_global_launcher.py"
-            target_launcher = self.bin_dir / "cn"
-            
-            if source_launcher.exists():
-                import shutil
-                shutil.copy2(source_launcher, target_launcher)
-                # Tornar executável
-                import os
-                os.chmod(target_launcher, 0o755)
-                print(f"✅ Launcher global criado: {target_launcher}")
-            else:
-                print(f"⚠️  Launcher global não encontrado: {source_launcher}")
-                return False
-            
-            # Criar documentação global
-            docs_content = f'''# Context Navigator - Instalação Global
+            print(f"⚠️  Launcher global não encontrado: {source_launcher}")
+            return False
+        
+        # Criar documentação global
+        docs_content = f'''# Context Navigator - Instalação Global
 
 ## 🌐 INSTALAÇÃO GLOBAL ATIVA
 
@@ -301,87 +292,15 @@ export PATH="$HOME/.local/bin:$PATH"
 - cn new TYPE nome   - Criar novo documento
 - cn help            - Ajuda completa
 '''
-            
-            # Criar arquivo de documentação
-            docs_file = self.install_dir / "HOW_TO_USE.md"
-            with open(docs_file, 'w', encoding='utf-8') as f:
-                f.write(docs_content)
-            print(f"✅ Documentação global criada: HOW_TO_USE.md")
-            
-            return True
-        except Exception as e:
-            print(f"❌ Erro ao criar launcher global: {e}")
-            return False
-    
-    def create_local_launcher(self) -> bool:
-        """Cria launcher local - comportamento original"""
-        # Criar arquivo de documentação local
-        docs_content = f'''# Context Navigator - Como Usar (BUSCA INTELIGENTE)
-
-## 🎯 BUSCA AUTOMÁTICA ATIVADA
-
-O Context Navigator agora busca automaticamente por .context-navigator/ no diretório atual e em diretórios pais.
-
-### 📋 COMANDOS BÁSICOS:
-
-Para usar o Context Navigator, execute sempre:
-
-```bash
-python3 -m context_navigator.cn_cli COMANDO
-```
-
-### 🎯 COMANDOS DISPONÍVEIS:
-
-📊 PRINCIPAIS:
-- python3 -m context_navigator.cn_cli scan
-- python3 -m context_navigator.cn_cli demo  
-- python3 -m context_navigator.cn_cli help
-
-📝 CRIAR DOCUMENTOS:
-- python3 -m context_navigator.cn_cli new decision nome
-- python3 -m context_navigator.cn_cli new process nome
-- python3 -m context_navigator.cn_cli new reference nome
-
-### 💡 ALIAS OPCIONAL (configure você mesmo):
-
-Se quiser usar apenas "cn", adicione ao seu ~/.bashrc:
-
-```bash
-alias cn="python3 -m context_navigator.cn_cli"
-```
-
-### 🌐 USAR GLOBALMENTE:
-
-Para usar de qualquer diretório, copie o launcher global para o PATH:
-
-```bash
-cp {self.install_dir}/scripts/cn_global_launcher.py ~/.local/bin/cn
-chmod +x ~/.local/bin/cn
-```
-
-### 🎯 BUSCA INTELIGENTE:
-- Busca .context-navigator/ no diretório atual
-- Busca .context-navigator/ em diretórios pais
-- Permite usar de subdiretórios do projeto
-
-### 📁 ESTRUTURA CRIADA:
-- .context-navigator/docs/     - Documentos organizados
-- .context-navigator/scripts/  - Scripts do sistema
-- .context-navigator/templates/ - Templates disponíveis
-'''
         
-        try:
-            # Criar arquivo de documentação
-            docs_file = self.install_dir / "HOW_TO_USE.md"
-            with open(docs_file, 'w', encoding='utf-8') as f:
-                f.write(docs_content)
-            print(f"✅ Documentação criada: HOW_TO_USE.md")
-            
-            return True
-        except Exception as e:
-            print(f"❌ Erro ao criar documentação: {e}")
-            return False
-            
+        # Criar arquivo de documentação
+        docs_file = self.install_dir / "HOW_TO_USE.md"
+        with open(docs_file, 'w', encoding='utf-8') as f:
+            f.write(docs_content)
+        print(f"✅ Documentação global criada: HOW_TO_USE.md")
+        
+        return True
+    
     def test_installation(self) -> bool:
         """Testa se a instalação está funcionando - COMPORTAMENTO BURRO"""
         print(f"\n🧪 Testando instalação...")
@@ -389,7 +308,7 @@ chmod +x ~/.local/bin/cn
         try:
             # Verificar se arquivos essenciais foram copiados
             essential_files = [
-                "scripts/context_scanner.py",
+                "scripts/core/context_scanner.py",
                 "templates/decisao.md",
                 ".contextrc",
                 "context.rule",
@@ -431,30 +350,30 @@ chmod +x ~/.local/bin/cn
         print(f"🎉 INSTALAÇÃO CONCLUÍDA COM SUCESSO!")
         print(f"="*60)
         print(f"")
-        print(f"📁 Workspace: {self.target_path}")
+        print(f"📁 Workspace: {self.source_dir}")
         print(f"📦 Instalação: {self.install_dir}")
         print(f"📋 Documentação: {self.install_dir}/HOW_TO_USE.md")
         print(f"")
         print(f"🤖 COMPORTAMENTO BURRO:")
         print(f"")
         print(f"1. 📋 Ver comandos disponíveis:")
-        print(f"   python3 -m context_navigator.cn_cli help")
+        print(f"   cn help")
         print(f"")
         print(f"2. 🧪 Testar o sistema:")
-        print(f"   python3 -m context_navigator.cn_cli demo")
+        print(f"   cn demo")
         print(f"")
         print(f"3. 📝 Criar seu primeiro documento:")
-        print(f"   python3 -m context_navigator.cn_cli new decision minha_decisao")
+        print(f"   cn new decision minha_decisao")
         print(f"")
         print(f"4. 🔍 Escanear documentos:")
-        print(f"   python3 -m context_navigator.cn_cli scan")
+        print(f"   cn scan")
         print(f"")
         print(f"5. 📊 Validar métricas:")
-        print(f"   python3 -m context_navigator.cn_cli validate")
+        print(f"   cn validate")
         print(f"")
         print(f"💡 CONFIGURAÇÃO OPCIONAL:")
         print(f"• Para usar apenas 'cn', adicione ao ~/.bashrc:")
-        print(f"  alias cn='python3 -m context_navigator.cn_cli'")
+        print(f"  alias cn='cn'")
         print(f"• Leia {self.install_dir}/HOW_TO_USE.md para detalhes")
         print(f"")
         print(f"🎯 Software que funciona sempre igual - BURRO INTELIGENTE!")
@@ -499,21 +418,15 @@ def main():
     args = parser.parse_args()
     
     global_install = getattr(args, 'global', False)
-    installer = ContextNavigatorInstaller(args.target, global_install)
+    installer = ContextNavigatorInstaller(global_install)
     
     if installer.install():
         print("\n✅ Instalação concluída com sucesso!")
         
-        if global_install:
-            print("\n🌐 INSTALAÇÃO GLOBAL ATIVA!")
-            print("💡 Para usar globalmente, adicione ao ~/.bashrc:")
-            print("   export PATH=\"$HOME/.local/bin:$PATH\"")
-            print("🎯 Depois execute: cn help")
-        else:
-            print("\n📁 INSTALAÇÃO LOCAL ATIVA!")
-            print("💡 Para usar globalmente, copie o launcher:")
-            print(f"   cp {installer.install_dir}/scripts/cn_global_launcher.py ~/.local/bin/cn")
-            print("   chmod +x ~/.local/bin/cn")
+        print("\n🌐 INSTALAÇÃO GLOBAL ATIVA!")
+        print("💡 Para usar globalmente, adicione ao ~/.bashrc:")
+        print("   export PATH=\"$HOME/.local/bin:$PATH\"")
+        print("🎯 Depois execute: cn help")
         
         return 0
     else:

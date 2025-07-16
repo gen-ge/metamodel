@@ -17,13 +17,8 @@ import argparse
 
 class MetricsValidator:
     def __init__(self, config_path: str = ".contextrc"):
-        self.config_path = config_path
-        self.config = self.load_config()
-        self.context_map_path = Path(".context-map")
-        self.templates_path = Path("templates")
-        self.docs_path = Path("docs")
-        self.examples_path = Path("examples")
-        self.scripts_path = Path("scripts")
+        # NOVO: Usar WorkspaceManager para detectar workspace
+        self._init_with_workspace_manager()
         
         # Métricas do PRD
         self.target_metrics = {
@@ -38,14 +33,57 @@ class MetricsValidator:
             "manual_intervention": 0.0  # 0 intervenção manual regular
         }
         
-    def load_config(self) -> Dict:
-        """Carrega configuração do .contextrc"""
-        if not os.path.exists(self.config_path):
-            return {}
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
+        try:
+            from ..core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager, Workspace
         
-        with open(self.config_path, 'r', encoding='utf-8') as file:
-            return yaml.safe_load(file)
-    
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            print("❌ Context Navigator workspace não encontrado")
+            print("💡 Execute 'cn init' para configurar este diretório")
+            sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.output_dir = current_workspace.root_path / ".cn_model"
+        
+        # Configuração vem do workspace
+        self.config = current_workspace.configuration
+        
+        # Paths para nova arquitetura
+        self.context_map_path = self.output_dir
+        self.templates_path = self._get_global_templates_path()
+        self.docs_path = self.output_dir / "docs"
+        self.examples_path = self.base_path / "examples"
+        self.scripts_path = Path(__file__).parent
+        
+        print(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
+        
+    def _get_global_templates_path(self) -> Path:
+        """Detecta onde estão os templates na instalação global"""
+        possible_locations = [
+            Path("/opt/context-navigator/templates"),
+            Path.home() / ".local" / "share" / "context-navigator" / "templates",
+        ]
+        
+        for location in possible_locations:
+            if location.exists():
+                return location
+        
+        # Fallback para desenvolvimento
+        return Path(__file__).parent.parent / "templates"
+        
     def load_context_map(self, filename: str) -> Dict:
         """Carrega mapa de contexto específico"""
         map_path = self.context_map_path / filename
@@ -552,13 +590,30 @@ class MetricsValidator:
 
 def main():
     parser = argparse.ArgumentParser(description='Context Navigator - Validador de Métricas')
-    parser.add_argument('--config', default='.contextrc', help='Caminho para configuração')
+    parser.add_argument('--config', default='.contextrc', help='Caminho para configuração (ignorado na v2.0)')
     parser.add_argument('--save', help='Salvar resultado em arquivo JSON')
     
     args = parser.parse_args()
     
     try:
-        validator = MetricsValidator(args.config)
+        # Detectar workspace usando WorkspaceManager
+        try:
+            from ..core.workspace_manager import WorkspaceManager
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager
+        
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            print("❌ Context Navigator workspace não encontrado")
+            print("💡 Execute 'cn init' para configurar este diretório")
+            return 1
+        
+        validator = MetricsValidator()
         result = validator.run_full_evaluation()
         validator.print_report(result)
         

@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+
+# ===== CONTEXT NAVIGATOR CODE BRIDGE =====
+# @cn:component context-scanner
+# @cn:doc context-scanner.md
+# @cn:context-level c3_component
+# @cn:context-type core
+# @cn:parent-module cli-interface
+# @cn:purpose "Scanner que processa documentos metodológicos e gera mapas de contexto"
+# @cn:memory-aid "Escaneador de documentos - lê pasta docs/ e gera .context-map/ automaticamente"
+# @cn:depends-on context.rule, CONVENTIONS.md, template-definitions
+# @cn:impacts context-map-generation, document-indexing, metadata-validation
+# @cn:provides document-scanning, metadata-extraction, context-map-generation
+# @cn:component-type functional
+# @cn:responsibility document-processing
+# @cn:single-purpose true
+# ============================================
+
 """
 Context Navigator - Scanner Básico
 Lê documentos da pasta metodológica, valida metadados e gera context maps
@@ -21,9 +38,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger('context_scanner')
 
+# @cn:class service
+# @cn:responsibility document-processing
+# @cn:pattern singleton
+# @cn:lifecycle singleton
+# @cn:purpose "Serviço que escaneia documentos e gera mapas de contexto"
 class ContextScanner:
     """Scanner que processa documentos da metodologia Context Navigator"""
     
+    # @cn:function core
+    # @cn:process initialization
+    # @cn:step 1
     def __init__(self, base_path: str = "."):
         """
         Inicializa o scanner
@@ -38,60 +63,71 @@ class ContextScanner:
         self.validation_errors = []
         self.conflicts = []
         
-        # Encontrar .context-navigator/ (COMPORTAMENTO BURRO)
-        self.cn_dir = self._find_context_navigator()
-        if not self.cn_dir:
-            logger.error("❌ .context-navigator/ não encontrado")
-            sys.exit(1)
+        # NOVO: Usar WorkspaceManager para detectar workspace
+        self._init_with_workspace_manager()
             
-        # Ajustar base_path para o diretório onde .context-navigator/ foi encontrado
-        self.base_path = self.cn_dir.parent
-        
-        # Carregar configuração
-        self._load_config()
-        
-        # SEMPRE usar caminhos fixos relativos a .context-navigator/ (COMPORTAMENTO BURRO)
-        self.docs_path = self.cn_dir / "docs"
-        self.templates_path = self.cn_dir / "templates"
-        self.context_maps_path = self.cn_dir / "context-map"
-        self.examples_path = self.cn_dir / "examples"
-        
-        # Criar diretório de mapas se não existir
-        self.context_maps_path.mkdir(exist_ok=True)
-        
-        logger.info(f"📁 Escaneando: {self.docs_path}")
+        logger.info(f"📁 Escaneando código: {self.base_path}")
+        logger.info(f"📄 Docs gerados: {self.docs_path}")
         logger.info(f"🗺️  Mapas: {self.context_maps_path}")
         
-    def _find_context_navigator(self) -> Optional[Path]:
-        """Encontra .context-navigator/ subindo na árvore de diretórios - COMPORTAMENTO BURRO"""
-        current_dir = Path.cwd()
-        
-        # Procurar .context-navigator/ no diretório atual e pais
-        for path in [current_dir] + list(current_dir.parents):
-            cn_dir = path / ".context-navigator"
-            if cn_dir.exists() and (cn_dir / "templates").exists():
-                logger.info(f"✅ Encontrado: {cn_dir}")
-                return cn_dir
-        
-        return None
-        
-    def _load_config(self) -> None:
-        """Carrega configuração do .contextrc - SEMPRE em .context-navigator/"""
-        # SEMPRE usar .contextrc em .context-navigator/ (COMPORTAMENTO BURRO)
-        assert self.cn_dir is not None, ".context-navigator/ deve ter sido encontrado"
-        config_file = self.cn_dir / ".contextrc"
-        
-        if not config_file.exists():
-            logger.error(f"❌ Arquivo .contextrc não encontrado: {config_file}")
-            sys.exit(1)
-            
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
         try:
-            with open(config_file, 'r', encoding='utf-8') as f:
-                self.config = yaml.safe_load(f)
-            logger.info(f"Configuração carregada com sucesso de {config_file}")
-        except Exception as e:
-            logger.error(f"Erro ao carregar configuração: {e}")
+            # Import relativo correto para estrutura core/ e scripts/core/
+            from ...core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            try:
+                # Import absoluto via PYTHONPATH
+                from core.workspace_manager import WorkspaceManager, Workspace
+            except ImportError:
+                # Fallback para desenvolvimento
+                import sys
+                sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+                from core.workspace_manager import WorkspaceManager, Workspace
+        
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            logger.error("❌ Context Navigator workspace não encontrado")
+            logger.error("💡 Execute 'cn init' para configurar este diretório")
             sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.docs_path = current_workspace.root_path / ".cn_model" / "docs"
+        self.context_maps_path = current_workspace.root_path / ".cn_model"
+        
+        # Templates ficam na instalação global
+        self.templates_path = self._get_global_templates_path()
+        
+        # Carregar configuração do workspace
+        self.config = current_workspace.configuration
+        
+        # Criar diretórios necessários
+        self.docs_path.mkdir(parents=True, exist_ok=True)
+        (self.context_maps_path / "context-map").mkdir(parents=True, exist_ok=True)
+        
+        logger.info(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
+        
+    def _get_global_templates_path(self) -> Path:
+        """Detecta onde estão os templates na instalação global"""
+        possible_locations = [
+            Path("/opt/context-navigator/templates"),
+            Path.home() / ".local" / "share" / "context-navigator" / "templates",
+        ]
+        
+        for location in possible_locations:
+            if location.exists():
+                return location
+        
+        # Fallback para desenvolvimento
+        return Path(__file__).parent.parent / "templates"
+        
+
             
     def _extract_front_matter(self, content: str) -> Tuple[Dict[str, Any], str]:
         """
@@ -355,8 +391,7 @@ class ContextScanner:
         # Pastas para escanear
         scan_paths = [
             self.docs_path,
-            self.templates_path,
-            self.examples_path
+            self.templates_path
         ]
         
         for scan_path in scan_paths:

@@ -78,11 +78,43 @@ class PatternDetector:
             'max_duplication_similarity': 0.8
         }
         
-        self._load_config()
-        self._init_paths()
+        self._init_with_workspace_manager()
         self._load_context_maps()
         self._load_document_cache()
         self._load_patterns_cache()
+        
+    def _init_with_workspace_manager(self):
+        """Inicializa usando WorkspaceManager para detectar workspace"""
+        # Importar WorkspaceManager
+        try:
+            from ..core.workspace_manager import WorkspaceManager, Workspace
+        except ImportError:
+            # Fallback para desenvolvimento
+            import sys
+            sys.path.insert(0, str(Path(__file__).parent.parent))
+            from core.workspace_manager import WorkspaceManager, Workspace
+        
+        # Detectar workspace atual
+        workspace_manager = WorkspaceManager()
+        current_workspace = workspace_manager.detect_current_workspace()
+        
+        if not current_workspace:
+            logger.error("❌ Context Navigator workspace não encontrado")
+            logger.error("💡 Execute 'cn init' para configurar este diretório")
+            sys.exit(1)
+        
+        # Configurar paths baseado no workspace
+        self.workspace = current_workspace
+        self.base_path = current_workspace.root_path
+        self.config = current_workspace.configuration
+        
+        # Definir paths para nova arquitetura
+        self.context_maps_path = current_workspace.root_path / ".cn_model"
+        cache_dir = current_workspace.root_path / ".cn_model" / "cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        self.patterns_cache_path = cache_dir / "patterns-cache.json"
+        
+        logger.info(f"🌐 Workspace: {current_workspace.name} ({current_workspace.root_path})")
         
     def _load_config(self) -> None:
         """Carrega configuração do .contextrc"""
