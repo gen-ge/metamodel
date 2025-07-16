@@ -62,10 +62,13 @@ cn new decision "arquitetura-do-sistema"
 cn scan
 
 # 4. Ver demonstração completa
-cn demo
+cn demo --full
 
 # 5. Validar qualidade
 cn validate
+
+# 6. Explorar componentes
+cn explore
 ```
 
 ## 🏗️ Arquitetura 2.0
@@ -279,22 +282,28 @@ graph TD
 
 ### **Guias Essenciais**
 
-- **⚡ [Quick Start](QUICK_START.md)** - 15 minutos para dominar
-- **🌐 [Instalação Global](docs/INSTALACAO_GLOBAL.md)** - Instalação e configuração
-- **📖 [Manual Humano](docs/MANUAL_HUMANO.md)** - Guia completo do usuário
-- **🤖 [Manual da IA](docs/MANUAL_IA.md)** - Protocolo para sistemas de IA
-- **🎯 [Convenções](docs/CONVENTIONS.md)** - Regras e padrões
+- **🌐 [Instalação Global](docs/c1-systems/INSTALACAO_GLOBAL.md)** - Instalação e configuração
+- **📖 [Manual Humano](docs/c1-systems/MANUAL_HUMANO.md)** - Guia completo do usuário
+- **🤖 [Manual da IA](docs/c1-systems/MANUAL_IA.md)** - Protocolo para sistemas de IA
+- **🎯 [Convenções](docs/c1-systems/CONVENTIONS.md)** - Regras e padrões
+- **🏗️ [Arquitetura 2.0](docs/c1-systems/ARCHITECTURE_2_0_OVERVIEW.md)** - Visão geral da arquitetura
 
 ### **Arquitetura do Sistema**
 
 - **🏗️ [Componentes Core](docs/c3-components/)** - Scanner, engine, validação
+  - [Context Scanner](docs/c3-components/context-scanner.md) - Scanner principal
+  - [Context Engine](docs/c3-components/context-engine.md) - Motor contextual
+  - [Component Explorer](docs/c3-components/cn-component-explorer.md) - Explorador de componentes
+  - [Component Parser](docs/c3-components/cn-component-parser.md) - Parser de componentes
+  - [Consistency Validator](docs/c3-components/cn-consistency-validator.md) - Validador de consistência
 - **🔧 [Módulos](docs/c2-modules/)** - CLI, interfaces, processamento
-- **🌐 [Sistema Global](docs/c3-components-global/)** - WorkspaceManager, instalação
+  - [CLI Interface](docs/c2-modules/cli-interface.md) - Interface de linha de comando
 
 ### **Exemplos Práticos**
 
-- **💡 [Exemplos](examples/)** - Casos de uso reais
-- **🎪 [Demonstrações](src/context_navigator/scripts/tools/context_demo.py)** - Demo interativo
+- **💡 [Exemplos](examples/)** - Casos de uso reais com templates
+- **🎪 Demonstrações** - Use `cn demo --full` para demo interativo completo
+- **📋 Templates** - Use `cn new [tipo] nome` para criar documentos
 
 ## 🔧 Requisitos
 
@@ -365,4 +374,4 @@ cn demo
 
 ---
 
-📧 **Suporte:** [Issues](https://github.com/gen-ge/metamodel/issues) | 💬 **Discussões:** [GitHub Discussions](https://github.com/gen-ge/metamodel/discussions) | 📖 **Documentação:** [Manual Completo](docs/MANUAL_HUMANO.md)
+📧 **Suporte:** [Issues](https://github.com/gen-ge/metamodel/issues) | 💬 **Discussões:** [GitHub Discussions](https://github.com/gen-ge/metamodel/discussions) | 📖 **Documentação:** [Manual Completo](docs/c1-systems/MANUAL_HUMANO.md)
