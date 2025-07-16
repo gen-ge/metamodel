@@ -1,155 +1,92 @@
 # 🧭 Context Navigator 2.0
 
-> Sistema inteligente de documentação contextual com arquitetura global e componentização avançada
+> Sistema inteligente de documentação contextual que funciona globalmente
 
 [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)]()
-[![Architecture](https://img.shields.io/badge/architecture-2.0-blue.svg)]()
 
-## 🎯 O que é o Context Navigator 2.0?
+## 🎯 O que é o Context Navigator?
 
-Sistema revolucionário de **documentação contextual** que:
+**Context Navigator 2.0** é um sistema revolucionário de documentação que:
 
 - **🌐 Funciona globalmente** - Use `cn` de qualquer diretório
 - **🔍 Busca inteligente** - Encontra workspaces automaticamente
-- **🧩 Componentização** - Conecta documentação com código
-- **🤖 IA contextualizada** - Sempre sabe o estado do projeto
-- **📋 Templates inteligentes** - Estruturas padronizadas para tudo
+- **🧩 Conecta documentação com código** - Links bidirecionais
+- **📋 Templates padronizados** - Estruturas prontas para tudo
 - **⚡ Validação automática** - Detecta problemas em tempo real
 
-## 🚀 Instalação Única (Recomendada)
-
-### Instalação Global Automatizada
+## 🚀 Instalação (1 Comando)
 
 ```bash
 # Instalar globalmente (funciona de qualquer lugar)
 curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
 
-# Configurar PATH (adicione ao ~/.bashrc)
-export PATH="$HOME/.local/bin:$PATH"
+# Adicionar ao PATH
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
 # Testar instalação
 cn help
 ```
 
-### Alternativa: Instalação Local
-
-```bash
-# Clonar repositório
-git clone https://github.com/gen-ge/metamodel.git
-cd metamodel
-
-# Instalar localmente
-python3 src/context_navigator/installer/install.py
-
-# Usar com busca inteligente
-python3 -m context_navigator.cn_cli_legacy scan
-```
-
 ## ⚡ Primeiros Passos
 
+### **1. Inicializar Workspace**
+
 ```bash
-# 1. Inicializar workspace (em qualquer projeto)
 cd seu-projeto/
-cn init
-
-# 2. Criar primeiro documento
-cn new decision "arquitetura-do-sistema"
-
-# 3. Escanear e conectar documentos
-cn scan
-
-# 4. Ver demonstração completa
-cn demo --full
-
-# 5. Validar qualidade
-cn validate
-
-# 6. Explorar componentes
-cn explore
+cn init                    # Configura workspace
+cn scan                    # Mapeia documentação existente
 ```
 
-## 🏗️ Arquitetura 2.0
-
-### **Workspaces Inteligentes**
-
-```
-projeto/
-├── .cn_model/                  # Workspace Context Navigator 2.0
-│   ├── workspace.yml          # Configuração do workspace
-│   ├── components/            # Componentes documentados
-│   ├── templates/             # Templates personalizados
-│   └── maps/                  # Mapas de contexto
-├── docs/                      # Documentação do projeto
-│   ├── decisions/            # Decisões arquiteturais
-│   ├── processes/            # Processos e runbooks
-│   ├── references/           # APIs e referências
-│   └── architecture/         # Arquitetura e diagramas
-└── src/                      # Código fonte
-```
-
-### **Busca Inteligente Multi-Nível**
-
-O Context Navigator 2.0 busca automaticamente:
-
-1. **Workspace Local**: `.cn_model/` no diretório atual ou pais
-2. **Instalação Global**: `~/.local/share/context-navigator/`
-3. **Templates Sistema**: Sempre disponíveis globalmente
-
-```bash
-# Funciona de qualquer lugar!
-cd projeto/                     # cn scan ✅
-cd projeto/src/                 # cn scan ✅ (busca em ../)
-cd projeto/src/components/      # cn scan ✅ (busca em ../../)
-cd /qualquer/outro/lugar/       # cn scan ✅ (usa instalação global)
-```
-
-## 📋 Comandos Avançados
-
-### **Criação de Documentos**
+### **2. Criar Documentação**
 
 ```bash
 # Templates principais
+cn new decision "escolha-banco-dados"      # Decisões técnicas (ADRs)
+cn new process "deploy-producao"           # Processos e runbooks
+cn new reference "api-usuarios"            # APIs e referências
+cn new architecture "microservicos"       # Arquitetura e diagramas
+
+# Resultado: documentos padronizados em docs/
+```
+
+### **3. Trabalhar Globalmente**
+
+```bash
+# Funciona de qualquer lugar no projeto!
+cd projeto/                     # cn scan ✅
+cd projeto/src/                 # cn scan ✅ (busca automaticamente)
+cd projeto/src/components/      # cn scan ✅ (busca em ../)
+```
+
+## 📋 Comandos Essenciais
+
+### **Documentação**
+
+```bash
 cn new decision "nome"          # Decisões técnicas (ADRs)
 cn new process "nome"           # Processos e runbooks
 cn new reference "nome"         # APIs e documentação técnica
 cn new architecture "nome"      # Arquitetura e diagramas
-cn new analysis "nome"          # Análises e investigações
-cn new planning "nome"          # Planejamento e roadmaps
-
-# Com contexto específico
-cn new decision "auth-choice" --context-type core --level c2_module
 ```
 
-### **Gerenciamento de Workspace**
+### **Validação**
 
 ```bash
-# Workspace
-cn init                         # Inicializar workspace atual
-cn status                       # Status do workspace
-cn scan                         # Escanear e mapear documentos
-cn demo                         # Demonstração interativa
-
-# Validação e qualidade
 cn validate                     # Validar todos os documentos
-cn validate metrics             # Validar métricas específicas
-cn check                        # Verificar consistência geral
+cn scan                         # Mapear documentação
+cn demo                         # Demonstração interativa
+cn status                       # Status do workspace
 ```
 
-### **Ferramentas Avançadas**
+### **Exploração**
 
 ```bash
-# Exploração
 cn explore                      # Explorar componentes
-cn parse                        # Parser de componentes
 cn conflicts                    # Detectar conflitos
-
-# Análise e métricas
-cn analyze documento.md         # Analisar documento específico
 cn metrics                      # Métricas de qualidade
-cn advisor                      # Sugestões inteligentes
 ```
 
 ## 🧩 Sistema de Componentização
@@ -162,194 +99,85 @@ cn advisor                      # Sugestões inteligentes
 # @cn:doc decisions/auth-architecture.md
 # @cn:context-level c2_module
 # @cn:context-type core
-# @cn:purpose "Sistema de autenticação de usuários"
-# @cn:depends-on security-policy.md, database-design.md
 # ============================================
 
 class UserAuthenticator:
-    """Autenticador de usuários integrado ao Context Navigator"""
+    """Sistema de autenticação integrado ao Context Navigator"""
     pass
 ```
 
 ### **Níveis de Contexto**
 
-- **c1_root**: Decisões de sistema (arquitetura geral, tecnologias principais)
-- **c2_module**: Decisões de módulo (funcionalidades específicas, APIs internas)
-- **c3_component**: Decisões de componente (implementação detalhada, configurações)
+- **c1_root** - Decisões de sistema (arquitetura geral)
+- **c2_module** - Decisões de módulo (funcionalidades específicas)
+- **c3_component** - Decisões de componente (implementação detalhada)
 
-### **Tipos de Contexto**
+## 📚 Tipos de Documento
 
-- **core**: Lógica de negócio central
-- **api**: Interfaces e endpoints
-- **data**: Persistência e modelos
-- **ui**: Interface de usuário
-- **infra**: Infraestrutura e deploy
-- **shared**: Componentes compartilhados
+| Tipo                | Uso                      | Exemplo                        |
+| ------------------- | ------------------------ | ------------------------------ |
+| **📋 Decision**     | ADRs, escolhas técnicas  | "Escolha do banco de dados"    |
+| **⚙️ Process**      | Runbooks, tutoriais      | "Deploy em produção"           |
+| **📖 Reference**    | APIs, documentação       | "API de autenticação"          |
+| **🏗️ Architecture** | Diagramas, componentes   | "Arquitetura de microserviços" |
+| **🔍 Analysis**     | Debugging, investigações | "Análise de performance"       |
+| **📅 Planning**     | Roadmaps, sprints        | "Roadmap Q1 2024"              |
 
-## 🎯 Tipos de Documento
-
-| Tipo                | Uso                      | Template      | Exemplo                        |
-| ------------------- | ------------------------ | ------------- | ------------------------------ |
-| **📋 Decision**     | ADRs, escolhas técnicas  | 40% dos casos | "Escolha do banco de dados"    |
-| **⚙️ Process**      | Runbooks, tutoriais      | 20% dos casos | "Deploy em produção"           |
-| **📖 Reference**    | APIs, documentação       | 15% dos casos | "API de autenticação"          |
-| **🏗️ Architecture** | Diagramas, componentes   | 10% dos casos | "Arquitetura de microserviços" |
-| **🔍 Analysis**     | Debugging, investigações | 10% dos casos | "Análise de performance"       |
-| **📅 Planning**     | Roadmaps, sprints        | 5% dos casos  | "Roadmap Q1 2024"              |
-
-## 🛠️ Scripts Especializados
-
-### **Organização por Responsabilidade**
-
-```
-src/context_navigator/scripts/
-├── core/                       # Processamento essencial
-│   ├── context_scanner.py     # Scanner principal
-│   └── context_engine.py      # Motor contextual
-├── validation/                 # Validação de qualidade
-│   ├── template_validator.py  # Validador de templates
-│   ├── cn_consistency_validator.py # Validador de consistência
-│   └── metrics_validator.py   # Validador de métricas
-├── analysis/                   # Análise avançada
-│   ├── pattern_detector.py    # Detector de padrões
-│   ├── conflict_detector.py   # Detector de conflitos
-│   ├── impact_analyzer.py     # Analisador de impactos
-│   └── context_advisor.py     # Consultor inteligente
-└── tools/                      # Utilitários
-    ├── cn_component_explorer.py # Explorador de componentes
-    ├── cn_component_parser.py  # Parser de componentes
-    ├── context_demo.py         # Sistema de demonstração
-    └── cn_global_launcher.py   # Launcher global
-```
-
-### **Todos os 13 Scripts Funcionais**
-
-✅ **Core (2)**: Scanner e engine fundamentais  
-✅ **Validation (3)**: Validação completa de qualidade  
-✅ **Analysis (4)**: Análise avançada com IA  
-✅ **Tools (4)**: Utilitários especializados
-
-## 🔧 Como Funciona Internamente
-
-### **WorkspaceManager 2.0**
-
-```python
-# Arquitetura moderna baseada em workspace
-workspace_manager = WorkspaceManager()
-workspace_manager.detect_workspace()        # Busca inteligente
-workspace_manager.load_configuration()      # Carrega .cn_model/
-workspace_manager.scan_documents()          # Mapeia contexto
-workspace_manager.validate_consistency()    # Garante qualidade
-```
-
-### **Fluxo de Trabalho**
-
-```mermaid
-graph TD
-    A[cn comando] --> B[WorkspaceManager.detect_workspace]
-    B --> C[Carregar .cn_model/workspace.yml]
-    C --> D[Executar comando específico]
-    D --> E[Atualizar mapas de contexto]
-    E --> F[Validar consistência]
-    F --> G[Salvar em .cn_model/]
-```
-
-## 🎁 Benefícios da Versão 2.0
-
-### **Para Desenvolvedores**
-
-- ✅ **Comando global** `cn` disponível em qualquer diretório
-- ✅ **Busca inteligente** automática de workspaces
-- ✅ **Componentização** conecta docs ↔ código
-- ✅ **Templates padronizados** para todos os tipos
-- ✅ **Validação automática** em tempo real
-
-### **Para Arquitetos**
-
-- ✅ **Visão componentizada** do sistema completo
-- ✅ **Rastreabilidade** decisão → implementação
-- ✅ **Impactos mapeados** automaticamente
-- ✅ **Evolução documentada** com histórico
-
-### **Para IAs**
-
-- ✅ **Contexto completo** via workspace.yml
-- ✅ **Relacionamentos explícitos** entre documentos
-- ✅ **Templates estruturados** padronizados
-- ✅ **Validação automática** de qualidade
-
-## 📚 Documentação Completa
-
-### **Guias Essenciais**
-
-- **🌐 [Instalação Global](docs/c1-systems/INSTALACAO_GLOBAL.md)** - Instalação e configuração
-- **📖 [Manual Humano](docs/c1-systems/MANUAL_HUMANO.md)** - Guia completo do usuário
-- **🤖 [Manual da IA](docs/c1-systems/MANUAL_IA.md)** - Protocolo para sistemas de IA
-- **🎯 [Convenções](docs/c1-systems/CONVENTIONS.md)** - Regras e padrões
-- **🏗️ [Arquitetura 2.0](docs/c1-systems/ARCHITECTURE_2_0_OVERVIEW.md)** - Visão geral da arquitetura
-
-### **Arquitetura do Sistema**
-
-- **🏗️ [Componentes Core](docs/c3-components/)** - Scanner, engine, validação
-  - [Context Scanner](docs/c3-components/context-scanner.md) - Scanner principal
-  - [Context Engine](docs/c3-components/context-engine.md) - Motor contextual
-  - [Component Explorer](docs/c3-components/cn-component-explorer.md) - Explorador de componentes
-  - [Component Parser](docs/c3-components/cn-component-parser.md) - Parser de componentes
-  - [Consistency Validator](docs/c3-components/cn-consistency-validator.md) - Validador de consistência
-- **🔧 [Módulos](docs/c2-modules/)** - CLI, interfaces, processamento
-  - [CLI Interface](docs/c2-modules/cli-interface.md) - Interface de linha de comando
-
-### **Exemplos Práticos**
-
-- **💡 [Exemplos](examples/)** - Casos de uso reais com templates
-- **🎪 Demonstrações** - Use `cn demo --full` para demo interativo completo
-- **📋 Templates** - Use `cn new [tipo] nome` para criar documentos
-
-## 🔧 Requisitos
-
-- **Python 3.7+** (testado até 3.12)
-- **~500KB** de espaço (incluindo todos os scripts)
-- **Sem dependências externas** (apenas bibliotecas padrão)
-
-## 🏆 Status do Projeto
-
-### **Arquitetura 2.0: Produção**
-
-- ✅ **13 scripts** totalmente funcionais
-- ✅ **WorkspaceManager** implementado e testado
-- ✅ **Instalação global** automatizada
-- ✅ **Busca inteligente** operacional
-- ✅ **Validação completa** implementada
-- ✅ **0 erros críticos** reportados
-
-### **Performance**
-
-- ⚡ **Scanner**: ~73ms (meta: 5s) - **67x mais rápido**
-- ⚡ **Validação**: ~200ms para projeto médio
-- ⚡ **Busca inteligente**: <50ms detecção de workspace
-
-## 🤝 Contribuindo
-
-Contribuições são muito bem-vindas! O projeto está maduro e estável.
+## 💡 Exemplo Prático
 
 ```bash
-# Clonar e instalar desenvolvimento
-git clone https://github.com/gen-ge/metamodel.git
-cd metamodel
-python3 src/context_navigator/installer/install.py
+# 1. Configurar projeto
+cd meu-projeto/
+cn init
 
-# Executar testes
-cn demo  # Demonstração completa
-cn validate  # Validação de qualidade
+# 2. Documentar decisão técnica
+cn new decision "escolha-react-framework"
+# Cria: docs/c2-modules/decisions/escolha-react-framework.md
+
+# 3. Documentar processo
+cn new process "deploy-aws"
+# Cria: docs/c2-modules/processes/deploy-aws.md
+
+# 4. Validar tudo
+cn validate
+# ✅ Documentos validados: 2/2
+# ✅ Métricas de qualidade: 95%
 ```
 
-### **Áreas de Contribuição**
+## 🌟 Recursos Avançados
 
-- 🐛 **Bug fixes** - Sempre prioritários
-- 🚀 **Novas funcionalidades** - Discutir em issues primeiro
-- 📚 **Documentação** - Sempre bem-vinda
-- 🧪 **Testes** - Expandir cobertura
-- 🎨 **UX/UI** - Melhorar experiência
+- **🔍 Busca Inteligente** - Encontra workspaces automaticamente
+- **🧩 Code Bridges** - Conecta código com documentação
+- **📊 Métricas de Qualidade** - Monitora qualidade da documentação
+- **🤖 Validação Automática** - Detecta problemas em tempo real
+- **📋 Templates Padronizados** - Estruturas consistentes
+- **🌐 Funcionamento Global** - Use de qualquer diretório
+
+## 📖 Documentação Completa
+
+- **[📘 Manual do Usuário](docs/c1-systems/MANUAL_HUMANO.md)** - Guia completo de uso
+- **[🤖 Manual para IA](docs/c1-systems/MANUAL_IA.md)** - Integração com assistentes
+- **[🏗️ Arquitetura](docs/c1-systems/ARCHITECTURE_2_0_OVERVIEW.md)** - Visão técnica do sistema
+
+## 🤝 Contribuir
+
+Quer contribuir? Adoramos colaborações!
+
+- **🐛 [Reportar bugs](https://github.com/gen-ge/metamodel/issues)**
+- **💡 [Sugerir funcionalidades](https://github.com/gen-ge/metamodel/discussions)**
+- **🛠️ [Contribuir código](CONTRIBUTING.md)** - Guia completo para desenvolvedores
+
+### **Setup de Desenvolvimento (30s)**
+
+```bash
+git clone https://github.com/gen-ge/metamodel.git
+cd metamodel && make setup
+
+# Desenvolvimento com mudanças imediatas
+./cndev.sh help
+```
+
+Ver **[CONTRIBUTING.md](CONTRIBUTING.md)** para workflow completo.
 
 ## 📄 Licença
 
@@ -357,14 +185,10 @@ cn validate  # Validação de qualidade
 
 ---
 
-## 🚀 Transforme sua Documentação!
-
-**Context Navigator 2.0** é a evolução definitiva para documentação contextual inteligente.
-
-### **Começar Agora**
+## 🚀 Comece Agora!
 
 ```bash
-# 1 comando para começar
+# 1 comando para instalar
 curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
 
 # Usar imediatamente
@@ -372,6 +196,8 @@ cn init
 cn demo
 ```
 
+**Transforme sua documentação hoje mesmo!** 🎯
+
 ---
 
-📧 **Suporte:** [Issues](https://github.com/gen-ge/metamodel/issues) | 💬 **Discussões:** [GitHub Discussions](https://github.com/gen-ge/metamodel/discussions) | 📖 **Documentação:** [Manual Completo](docs/c1-systems/MANUAL_HUMANO.md)
+📧 **Suporte:** [Issues](https://github.com/gen-ge/metamodel/issues) | 💬 **Discussões:** [GitHub Discussions](https://github.com/gen-ge/metamodel/discussions) | 📖 **Docs:** [Manual Completo](docs/c1-systems/MANUAL_HUMANO.md)

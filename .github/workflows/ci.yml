@@ -1,0 +1,150 @@
+name: 🧪 Context Navigator CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: 🧪 Test on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9, "3.10", "3.11"]
+
+    steps:
+      - name: 📁 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 🔧 Setup Development Environment
+        run: |
+          chmod +x cndev.sh
+          echo "✅ Development environment setup"
+
+      - name: 🧪 Test Development Commands
+        run: |
+          ./cndev.sh version
+          ./cndev.sh help
+
+      - name: 🏗️ Test Build System
+        run: |
+          python3 build.py --version ci-test-${{ github.sha }}
+          echo "✅ Build successful"
+
+      - name: 📦 Validate Build Package
+        run: |
+          cd dist
+          tar -tzf context-navigator-ci-test-${{ github.sha }}.tar.gz | head -10
+          echo "✅ Package contents validated"
+
+  # Job para testar instalação
+  install-test:
+    name: 🚀 Installation Test
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: 📁 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: 🏗️ Build Package
+        run: |
+          python3 build.py --version ci-install-test
+
+      - name: 🚀 Test Installation
+        run: |
+          cd dist
+          tar -xzf context-navigator-ci-install-test.tar.gz
+          cd context-navigator-ci-install-test
+          python3 install.py
+          echo "✅ Installation successful"
+
+  # Job para release automático (quando houver tags)
+  release:
+    name: 🚀 Auto Release
+    runs-on: ubuntu-latest
+    needs: [test, install-test]
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: 📁 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: 🏗️ Build Release Package
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          python3 build.py --version $VERSION
+          echo "✅ Release package built: $VERSION"
+
+      - name: 📤 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/context-navigator-*.tar.gz
+            dist/context-navigator-*.zip
+            dist/install-context-navigator-*.txt
+            dist/install-context-navigator-*.sh
+          name: Context Navigator v${{ github.ref_name }}
+          body: |
+            🧭 **Context Navigator v${{ github.ref_name }}**
+
+            ## 🚀 Instalação Rápida
+            ```bash
+            curl -L https://github.com/gen-ge/metamodel/releases/download/${{ github.ref_name }}/install-context-navigator-latest.sh | bash
+            ```
+
+            ## 📦 Arquivos Disponíveis
+            - `context-navigator-*.tar.gz` - Pacote principal
+            - `context-navigator-*.zip` - Pacote ZIP
+            - `install-context-navigator-*.sh` - Instalador shell
+            - `install-context-navigator-*.txt` - Instalador Python
+
+            Ver **[RELEASE_NOTES.md](RELEASE_NOTES.md)** para detalhes completos.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Job para lint (futuro)
+  lint:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📁 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: 🔍 Basic Code Validation
+        run: |
+          # Verificar syntax básica dos arquivos Python
+          python3 -m py_compile src/context_navigator/core/*.py
+          python3 -m py_compile src/context_navigator/scripts/*/*.py
+          echo "✅ Python syntax validation passed"
+
+      - name: 📚 Documentation Check
+        run: |
+          # Verificar se arquivos de documentação existem
+          test -f README.md
+          test -f CONTRIBUTING.md
+          test -f docs/c1-systems/MANUAL_HUMANO.md
+          echo "✅ Documentation files present"

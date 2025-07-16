@@ -140,3 +140,6 @@ tests/
 # OS
 .DS_Store
 Thumbs.db 
+
+# Development files (removido - agora incluímos para outros desenvolvedores)
+# cndev.sh 
