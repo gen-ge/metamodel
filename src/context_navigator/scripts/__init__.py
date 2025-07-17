@@ -10,18 +10,18 @@ Estrutura:
 """
 
 # Imports por categoria
-from . import core
+from . import engines
 from . import validation
 from . import analysis
 from . import tools
 
-__all__ = ['core', 'validation', 'analysis', 'tools']
+__all__ = ['engines', 'validation', 'analysis', 'tools']
 
 # Mapa completo de scripts
 SCRIPT_CATEGORIES = {
-    'core': {
-        'description': 'Scripts essenciais de processamento principal',
-        'scripts': core.SCRIPTS
+    'engines': {
+        'description': 'Engines essenciais de processamento principal',
+        'scripts': engines.ENGINES
     },
     'validation': {
         'description': 'Scripts especializados em validação de qualidade',

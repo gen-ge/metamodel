@@ -94,15 +94,22 @@ class GlobalCommandRouter:
         """Manuseia comandos que operam dentro de um workspace"""
         print(f"📁 Workspace: {workspace.name} ({workspace.root_path})")
         
-        # Mapear comandos para scripts
+        # Mapear comandos para handlers (nativos) ou scripts
         command_map = {
+            # Scripts (executam no path do workspace)
             'scan': 'context_scanner',
+            'demo': 'context_demo',
+            
+            # Comandos nativos (implementados aqui)
+            'new': self._handle_new_command,
+            'templates': self._handle_templates_command,
+            'info': self._show_workspace_info,
+            
+            # Comandos compostos
             'component': self._handle_component_command,
             'validate': self._handle_validate_command,
-            'demo': 'context_demo',
             'daemon': self._handle_daemon_command,
-            'remove': self._remove_workspace,
-            'info': self._show_workspace_info
+            'remove': self._remove_workspace
         }
         
         if command not in command_map:
@@ -180,11 +187,25 @@ class GlobalCommandRouter:
         subcommand = args[0]
         subcommand_args = args[1:]
         
-        if subcommand == 'consistency':
+        # Aceitar --help diretamente
+        if subcommand in ['-h', '--help']:
+            print("Uso: cn validate [subcommando] [opções]")
+            print()
+            print("Subcomandos:")
+            print("  consistency    Valida consistência da documentação")
+            print("  (sem args)     Executa validação geral")
+            print()
+            print("Exemplos:")
+            print("  cn validate")
+            print("  cn validate consistency")
+            print("  cn validate consistency --help")
+            return 0
+        elif subcommand == 'consistency':
             return self._execute_script(workspace, 'cn_consistency_validator', subcommand_args)
         else:
             print(f"❌ Subcomando não reconhecido: {subcommand}")
             print("💡 Subcomandos disponíveis: consistency")
+            print("💡 Use 'cn validate --help' para mais informações")
             return 1
     
     def _handle_daemon_command(self, workspace: Workspace, args: List[str]) -> int:
@@ -260,9 +281,9 @@ class GlobalCommandRouter:
         """Executa script no contexto do workspace"""
         # Mapeamento de scripts para seus diretórios na organização 2.0
         script_locations = {
-            # Core scripts
-            'context_scanner': 'core/context_scanner.py',
-            'context_engine': 'core/context_engine.py',
+            # Processing engines
+            'context_scanner': 'engines/context_scanner.py',
+            'context_engine': 'engines/context_engine.py',
             
             # Validation scripts  
             'template_validator': 'validation/template_validator.py',
@@ -308,7 +329,7 @@ class GlobalCommandRouter:
         
         # Executar script como módulo Python para resolver imports
         if script_name in script_locations:
-            # Converter path para módulo (ex: scripts/core/context_scanner.py -> scripts.core.context_scanner)
+            # Converter path para módulo (ex: scripts/engines/context_scanner.py -> scripts.engines.context_scanner)
             module_path = script_locations[script_name].replace('/', '.').replace('.py', '')
             cmd = [sys.executable, "-m", f"scripts.{module_path}"] + args
         else:
@@ -341,6 +362,8 @@ class GlobalCommandRouter:
         print()
         print("Comandos de Workspace:")
         print("  scan                 Escaneia código e atualiza documentação")
+        print("  new <tipo> <nome>    Cria novo documento")
+        print("  templates            Lista templates disponíveis")
         print("  component explore    Explora componentes do workspace")
         print("  component parse      Analisa componentes específicos")
         print("  validate consistency Valida consistência da documentação")
@@ -354,15 +377,212 @@ class GlobalCommandRouter:
         print()
         print("Exemplos:")
         print("  cn init              # Configura workspace")
+        print("  cn new decision nome # Cria nova decisão")
         print("  cn scan              # Escaneia projeto")
+        print("  cn templates         # Lista templates")
         print("  cn component explore # Explora componentes")
         print("  cn validate          # Valida documentação")
         print()
-        print("💡 O Context Navigator funciona como git - detecta workspace automaticamente")
-        print("   subindo na hierarquia de diretórios procurando por .cn_model/")
+        print("💡 O Context Navigator detecta workspace pelo registry global")
+        print("   Funciona em qualquer subdiretório do workspace registrado")
         
         return 0
-    
+
+    def _handle_new_command(self, workspace: Workspace, args: List[str]) -> int:
+        """Criar documentos baseado no workspace do registry"""
+        if not args:
+            self._show_new_help()
+            return 1
+
+        doc_type = args[0]
+        doc_name = args[1] if len(args) > 1 else None
+
+        if not doc_name:
+            print(f"❌ Nome obrigatório para {doc_type}")
+            print(f"💡 Uso: cn new {doc_type} <nome>")
+            return 1
+
+        # OPERAÇÃO DETERMINÍSTICA: workspace.root_path vem do workspaces-registry.yml
+        return self._create_document(workspace, doc_type, doc_name)
+
+    def _create_document(self, workspace: Workspace, doc_type: str, name: str) -> int:
+        """Criar documento usando template no workspace do registry"""
+        import shutil
+        from datetime import datetime
+
+        # Validações
+        valid_types = ['decision', 'process', 'reference', 'architecture', 'analysis', 'planning']
+        if doc_type not in valid_types:
+            print(f"❌ Tipo inválido: {doc_type}")
+            print(f"💡 Tipos válidos: {', '.join(valid_types)}")
+            return 1
+
+        # OPERAÇÃO NO PATH DO REGISTRY
+        workspace_path = Path(workspace.root_path)  # ← Do workspaces-registry.yml
+        
+        # Mapear tipos para pastas organizadas
+        type_to_folder = {
+            "decision": "decisions",
+            "process": "processes", 
+            "reference": "references",
+            "architecture": "architecture",
+            "analysis": "analysis",
+            "planning": "planning"
+        }
+        
+        # Criar estrutura de diretórios em .cn_model/docs/ (outputs do workspace)
+        docs_dir = workspace_path / ".cn_model" / "docs" / type_to_folder.get(doc_type, "misc")
+        docs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Determinar nome do arquivo
+        filename = f"{name}.md"
+        doc_path = docs_dir / filename
+
+        if doc_path.exists():
+            print(f"❌ Documento já existe: {doc_path}")
+            return 1
+
+        # Gerar conteúdo do template
+        template_content = self._generate_template_content(workspace, doc_type, name)
+        doc_path.write_text(template_content, encoding='utf-8')
+
+        print(f"✅ Documento criado: {doc_path}")
+        print(f"📁 Workspace: {workspace.name}")
+        print(f"🎯 Tipo: {doc_type}")
+        return 0
+
+    def _handle_templates_command(self, workspace: Workspace, args: List[str]) -> int:
+        """Listar templates disponíveis"""
+
+        # Templates do sistema (instalação)
+        system_templates = self._get_system_templates_path()
+
+        # Templates do workspace (customizados)
+        workspace_templates = Path(workspace.root_path) / ".cn_model" / "templates"
+
+        print("📋 Templates Disponíveis:")
+        print()
+
+        print("🏗️ Sistema:")
+        if system_templates.exists():
+            for template_file in system_templates.glob("*.md"):
+                template_name = template_file.stem
+                print(f"  {template_name}")
+        else:
+            print("  (nenhum template de sistema encontrado)")
+
+        if workspace_templates.exists():
+            print()
+            print("🎯 Workspace:")
+            for template_file in workspace_templates.glob("*.md"):
+                template_name = template_file.stem
+                print(f"  {template_name} (customizado)")
+
+        return 0
+
+    def _get_system_templates_path(self) -> Path:
+        """Buscar templates do sistema"""
+        # Para desenvolvimento, usar templates locais
+        current_script_path = Path(__file__).parent.parent
+        return current_script_path / "templates"
+
+    def _get_template_path(self, workspace: Workspace, doc_type: str) -> Optional[Path]:
+        """Buscar template (workspace primeiro, depois sistema)"""
+
+        # Mapear tipos para templates (português)
+        type_to_template = {
+            "decision": "decisao",
+            "process": "processo",
+            "reference": "referencia",
+            "architecture": "arquitetura",
+            "analysis": "analise",
+            "planning": "planejamento"
+        }
+
+        template_name = type_to_template.get(doc_type, doc_type)
+
+        # 1. Template customizado no workspace
+        workspace_template = Path(workspace.root_path) / ".cn_model" / "templates" / f"{template_name}.md"
+        if workspace_template.exists():
+            return workspace_template
+
+        # 2. Template do sistema
+        system_template = self._get_system_templates_path() / f"{template_name}.md"
+        if system_template.exists():
+            return system_template
+
+        # 3. Template padrão não encontrado
+        return None
+
+    def _generate_template_content(self, workspace: Workspace, doc_type: str, name: str) -> str:
+        """Gerar conteúdo do template"""
+        from datetime import datetime
+
+        template_path = self._get_template_path(workspace, doc_type)
+
+        if template_path:
+            # Carregar template personalizado
+            template_content = template_path.read_text(encoding='utf-8')
+
+            # Substituir variáveis básicas
+            template_content = template_content.replace("{name}", name)
+            template_content = template_content.replace("{date}", datetime.now().strftime("%Y-%m-%d"))
+            template_content = template_content.replace("{workspace}", workspace.name)
+
+            return template_content
+        else:
+            # Template padrão hardcoded
+            return self._get_default_template(doc_type, name)
+
+    def _get_default_template(self, doc_type: str, name: str) -> str:
+        """Template padrão quando não encontra arquivo de template"""
+        from datetime import datetime
+        
+        date_str = datetime.now().strftime("%Y-%m-%d")
+        
+        return f"""# {name}
+
+**Tipo**: {doc_type}
+**Data**: {date_str}
+**Status**: em desenvolvimento
+
+## Resumo
+
+[Descreva brevemente o contexto e objetivo deste {doc_type}]
+
+## Detalhes
+
+[Desenvolva os detalhes específicos]
+
+## Considerações
+
+[Adicione considerações importantes]
+
+## Próximos Passos
+
+- [ ] [Defina ações necessárias]
+
+---
+*Documento criado automaticamente pelo Context Navigator*
+"""
+
+    def _show_new_help(self) -> None:
+        """Ajuda do comando new"""
+        print("Uso: cn new <tipo> <nome>")
+        print()
+        print("Tipos de documento:")
+        print("  decision      Decisões arquiteturais (ADRs)")
+        print("  process       Processos e runbooks")
+        print("  reference     APIs e documentação técnica")
+        print("  architecture  Arquitetura e diagramas")
+        print("  analysis      Análises e investigações")
+        print("  planning      Planejamentos e roadmaps")
+        print()
+        print("Exemplos:")
+        print("  cn new decision 'escolha-banco-dados'")
+        print("  cn new process 'deploy-producao'")
+        print("  cn new reference 'api-usuarios'")
+
     def _show_version(self) -> int:
         """Mostra versão do Context Navigator"""
         print("Context Navigator 2.0.0 - Global Edition")

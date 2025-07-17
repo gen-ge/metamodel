@@ -1,109 +1,260 @@
-# 🧭 Context Navigator 2.0
+# 🧭 Context Navigator 0.1.0-alpha - Early Access
 
-> Sistema inteligente de documentação contextual que funciona globalmente
+> **Sistema de documentação contextual para projetos de software - Primeira versão funcional**
 
 [![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/status-alpha--functional-orange.svg)]()
+
+⚠️ **ALPHA VERSION:** Esta é a primeira versão funcional. Core features implementadas e testadas, mas ainda em desenvolvimento ativo.
 
 ## 🎯 O que é o Context Navigator?
 
-**Context Navigator 2.0** é um sistema revolucionário de documentação que:
+**Context Navigator 0.1.0-alpha** é um sistema de documentação inteligente que ajuda desenvolvedores a criar e manter documentação técnica estruturada em seus projetos.
 
-- **🌐 Funciona globalmente** - Use `cn` de qualquer diretório
-- **🔍 Busca inteligente** - Encontra workspaces automaticamente
-- **🧩 Conecta documentação com código** - Links bidirecionais
-- **📋 Templates padronizados** - Estruturas prontas para tudo
-- **⚡ Validação automática** - Detecta problemas em tempo real
+### 🌟 **Por que usar?**
 
-## 🚀 Instalação (1 Comando)
+- **📝 Documentação padronizada** - Templates para decisões técnicas (ADRs), processos, APIs e arquitetura
+- **🌐 Funciona globalmente** - Comando `cn` disponível em qualquer lugar do sistema
+- **📋 Registry inteligente** - Detecta automaticamente seus projetos registrados
+- **🎯 Zero configuração** - Instala uma vez, funciona em todos os projetos
+- **⚡ Detecção automática** - Funciona em qualquer subdiretório do projeto
+
+### 🎨 **Tipos de Documentação**
+
+| Template         | Para que usar               | Exemplo                         |
+| ---------------- | --------------------------- | ------------------------------- |
+| **Decision**     | Decisões técnicas (ADRs)    | "Por que escolhemos React?"     |
+| **Process**      | Processos e runbooks        | "Como fazer deploy?"            |
+| **Reference**    | APIs e documentação técnica | "Documentação da API Users"     |
+| **Architecture** | Diagramas e arquitetura     | "Arquitetura dos microservices" |
+| **Analysis**     | Investigações técnicas      | "Análise de performance"        |
+| **Planning**     | Roadmaps e planejamentos    | "Roadmap Q1 2025"               |
+
+## 🚀 Instalação Rápida
 
 ```bash
-# Instalar globalmente (funciona de qualquer lugar)
-curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
+# 1. Download do projeto
+git clone https://github.com/gen-ge/metamodel.git
+cd metamodel
 
-# Adicionar ao PATH
+# 2. Instalar automaticamente
+python3 src/context_navigator/installer/install.py
+
+# 3. Adicionar ao PATH (se necessário)
+export PATH="$HOME/.local/bin:$PATH"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
 
-# Testar instalação
+# 4. Testar instalação
 cn help
 ```
 
 ## ⚡ Primeiros Passos
 
-### **1. Inicializar Workspace**
+### **1. Registrar seu Projeto**
 
 ```bash
-cd seu-projeto/
-cn init                    # Configura workspace
-cn scan                    # Mapeia documentação existente
+# Vá para o diretório do seu projeto
+cd meu-projeto/
+
+# Registre o projeto no Context Navigator
+cn init
+# ✅ Projeto registrado no sistema global
 ```
 
-### **2. Criar Documentação**
+### **2. Explorar Templates**
 
 ```bash
-# Templates principais
-cn new decision "escolha-banco-dados"      # Decisões técnicas (ADRs)
-cn new process "deploy-producao"           # Processos e runbooks
-cn new reference "api-usuarios"            # APIs e referências
-cn new architecture "microservicos"       # Arquitetura e diagramas
+# Ver todos os templates disponíveis
+cn templates
 
-# Resultado: documentos padronizados em docs/
+# Saída:
+# 📋 Templates disponíveis:
+# • decision    - Decisões técnicas (ADRs)
+# • process     - Processos e runbooks
+# • reference   - APIs e documentação técnica
+# • architecture - Arquitetura e diagramas
+# • analysis    - Análises e investigações
+# • planning    - Planejamentos e roadmaps
 ```
 
-### **3. Trabalhar Globalmente**
+### **3. Criar Primeira Documentação**
 
 ```bash
-# Funciona de qualquer lugar no projeto!
+# Criar uma decisão técnica
+cn new decision "escolha-do-framework"
+# ✅ Criado: .cn_model/docs/decisions/escolha-do-framework.md
+
+# Criar documentação de processo
+cn new process "deploy-producao"
+# ✅ Criado: .cn_model/docs/processes/deploy-producao.md
+
+# Criar documentação de API
+cn new reference "api-usuarios"
+# ✅ Criado: .cn_model/docs/references/api-usuarios.md
+```
+
+## 🎯 Como Funciona
+
+### **Sistema Global e Inteligente**
+
+O Context Navigator usa um **registry global** para detectar seus projetos:
+
+```bash
+# 1. Registrar projeto uma vez
+cd projeto/
+cn init                         # Registra no sistema
+
+# 2. Funciona de qualquer lugar do projeto
 cd projeto/                     # cn scan ✅
-cd projeto/src/                 # cn scan ✅ (busca automaticamente)
-cd projeto/src/components/      # cn scan ✅ (busca em ../)
+cd projeto/src/                 # cn scan ✅
+cd projeto/src/components/      # cn scan ✅
+
+# 3. Comportamento consistente sempre
+cn info                         # Mostra informações do projeto
+cn new decision "teste"         # Cria documentação no local correto
+```
+
+### **Estrutura Criada no seu Projeto**
+
+```
+seu-projeto/
+├── .cn_model/                  # 📁 Documentação gerada pelo Context Navigator
+│   ├── docs/                   # 📝 Documentos organizados por tipo
+│   │   ├── decisions/          # 🎯 Decisões técnicas (ADRs)
+│   │   ├── processes/          # ⚙️ Processos e runbooks
+│   │   ├── references/         # 📚 APIs e documentação técnica
+│   │   ├── architecture/       # 🏗️ Arquitetura e diagramas
+│   │   ├── analysis/           # 🔍 Análises e investigações
+│   │   └── planning/           # 📅 Planejamentos e roadmaps
+│   └── templates/              # 📄 Templates customizados (opcional)
+├── src/                        # 💻 Seu código fonte
+└── ...                         # 📁 Outros arquivos do projeto
 ```
 
 ## 📋 Comandos Essenciais
 
-### **Documentação**
+### **Gestão de Projetos**
 
 ```bash
-cn new decision "nome"          # Decisões técnicas (ADRs)
-cn new process "nome"           # Processos e runbooks
-cn new reference "nome"         # APIs e documentação técnica
-cn new architecture "nome"      # Arquitetura e diagramas
+cn init                         # Registrar projeto atual
+cn info                         # Informações do projeto
+cn remove                       # Remover projeto do sistema
 ```
 
-### **Validação**
+### **Criação de Documentação**
 
 ```bash
-cn validate                     # Validar todos os documentos
-cn scan                         # Mapear documentação
-cn demo                         # Demonstração interativa
-cn status                       # Status do workspace
+cn new decision "nome"          # ADR - Decisão técnica
+cn new process "nome"           # Processo ou runbook
+cn new reference "nome"         # Documentação de API/componente
+cn new architecture "nome"      # Diagrama de arquitetura
+cn new analysis "nome"          # Análise técnica
+cn new planning "nome"          # Planejamento/roadmap
 ```
 
-### **Exploração**
+### **Análise e Mapeamento**
 
 ```bash
-cn explore                      # Explorar componentes
-cn conflicts                    # Detectar conflitos
-cn metrics                      # Métricas de qualidade
+cn scan                         # Mapear documentação existente
+cn demo                         # Demonstração interativa do sistema
+# cn validate                   # TODO: Implementar validação
 ```
 
-## 🧩 Sistema de Componentização
+## 💡 Exemplo Prático Completo
 
-### **Conectando Documentação ↔ Código**
+```bash
+# 1. Configurar projeto React
+cd meu-app-react/
+cn init
+# ✅ Projeto 'meu-app-react' registrado
+
+# 2. Documentar decisão técnica
+cn new decision "escolha-react-vs-vue"
+# ✅ Criado: .cn_model/docs/decisions/escolha-react-vs-vue.md
+# Template preenchido com estrutura de ADR
+
+# 3. Documentar processo de deploy
+cn new process "deploy-aws-s3"
+# ✅ Criado: .cn_model/docs/processes/deploy-aws-s3.md
+
+# 4. Documentar API
+cn new reference "api-usuarios"
+# ✅ Criado: .cn_model/docs/references/api-usuarios.md
+
+# 5. Usar de qualquer lugar do projeto
+cd src/components/
+cn info                         # ✅ Detecta projeto via registry
+cn new decision "estrutura-componentes"
+# ✅ Cria em: ../../.cn_model/docs/decisions/estrutura-componentes.md
+
+# 6. Mapear toda documentação
+cn scan
+# ✅ Lista todos os documentos criados e organizados
+```
+
+## 🧪 **Validação de Funcionamento**
+
+**Teste se sua instalação funciona:**
+
+```bash
+# Execute nosso teste automatizado (16 testes)
+./test_real_install.sh
+
+# Ou teste manualmente:
+cn --version      # Deve mostrar versão
+cn help          # Deve listar comandos
+cd novo-projeto/
+cn init          # Deve criar .cn_model/
+cn templates     # Deve listar 6 tipos
+cn new decision teste  # Deve criar arquivo
+cn info          # Deve mostrar informações
+```
+
+## 🎨 Templates Inteligentes
+
+### **Templates Prontos para Usar**
+
+Cada comando `cn new` cria um documento com estrutura profissional:
+
+- **`cn new decision`** → Template de ADR (Architecture Decision Record)
+- **`cn new process`** → Template de runbook com checklist
+- **`cn new reference`** → Template de documentação de API
+- **`cn new architecture`** → Template para diagramas e componentes
+- **`cn new analysis`** → Template para investigações técnicas
+- **`cn new planning`** → Template para roadmaps e sprints
+
+### **Personalização de Templates**
+
+```bash
+# Copiar template para customização
+mkdir -p .cn_model/templates/
+cp ~/.local/share/context-navigator/templates/decisao.md .cn_model/templates/
+
+# Editar template customizado
+# O Context Navigator usará automaticamente sua versão customizada
+```
+
+## 🧩 Integração com Código
+
+### **Code Bridges - Conectando Documentação e Código**
 
 ```python
 # ===== CONTEXT NAVIGATOR CODE BRIDGE =====
 # @cn:component user-authentication
 # @cn:doc decisions/auth-architecture.md
 # @cn:context-level c2_module
-# @cn:context-type core
 # ============================================
 
 class UserAuthenticator:
-    """Sistema de autenticação integrado ao Context Navigator"""
-    pass
+    """
+    Sistema de autenticação integrado ao Context Navigator.
+
+    Documentação: .cn_model/docs/decisions/auth-architecture.md
+    """
+    def authenticate(self, user_credentials):
+        # Implementação documentada na decisão técnica
+        pass
 ```
 
 ### **Níveis de Contexto**
@@ -112,72 +263,126 @@ class UserAuthenticator:
 - **c2_module** - Decisões de módulo (funcionalidades específicas)
 - **c3_component** - Decisões de componente (implementação detalhada)
 
-## 📚 Tipos de Documento
+## 🎯 Casos de Uso Reais
 
-| Tipo                | Uso                      | Exemplo                        |
-| ------------------- | ------------------------ | ------------------------------ |
-| **📋 Decision**     | ADRs, escolhas técnicas  | "Escolha do banco de dados"    |
-| **⚙️ Process**      | Runbooks, tutoriais      | "Deploy em produção"           |
-| **📖 Reference**    | APIs, documentação       | "API de autenticação"          |
-| **🏗️ Architecture** | Diagramas, componentes   | "Arquitetura de microserviços" |
-| **🔍 Analysis**     | Debugging, investigações | "Análise de performance"       |
-| **📅 Planning**     | Roadmaps, sprints        | "Roadmap Q1 2024"              |
-
-## 💡 Exemplo Prático
+### **🏢 Empresa de Software**
 
 ```bash
-# 1. Configurar projeto
-cd meu-projeto/
-cn init
+# Documentar arquitetura de microservices
+cn new architecture "microservices-overview"
 
-# 2. Documentar decisão técnica
-cn new decision "escolha-react-framework"
-# Cria: docs/c2-modules/decisions/escolha-react-framework.md
+# Documentar processo de code review
+cn new process "code-review-checklist"
 
-# 3. Documentar processo
-cn new process "deploy-aws"
-# Cria: docs/c2-modules/processes/deploy-aws.md
+# Documentar decisão sobre banco de dados
+cn new decision "postgresql-vs-mongodb"
 
-# 4. Validar tudo
-cn validate
-# ✅ Documentos validados: 2/2
-# ✅ Métricas de qualidade: 95%
+# Documentar API principal
+cn new reference "core-api-v2"
 ```
 
-## 🌟 Recursos Avançados
+### **🚀 Startup/Projeto Pessoal**
 
-- **🔍 Busca Inteligente** - Encontra workspaces automaticamente
-- **🧩 Code Bridges** - Conecta código com documentação
-- **📊 Métricas de Qualidade** - Monitora qualidade da documentação
-- **🤖 Validação Automática** - Detecta problemas em tempo real
-- **📋 Templates Padronizados** - Estruturas consistentes
-- **🌐 Funcionamento Global** - Use de qualquer diretório
+```bash
+# Roadmap do produto
+cn new planning "mvp-roadmap"
 
-## 📖 Documentação Completa
+# Processo de deploy
+cn new process "deploy-heroku"
 
-- **[📘 Manual do Usuário](docs/c1-systems/MANUAL_HUMANO.md)** - Guia completo de uso
+# Análise de performance
+cn new analysis "database-bottlenecks"
+```
+
+### **🎓 Projeto Acadêmico**
+
+```bash
+# Documentar escolhas técnicas
+cn new decision "framework-machine-learning"
+
+# Processo de experimentos
+cn new process "experimento-modelo-ia"
+
+# Documentar resultados
+cn new analysis "resultados-experimento-1"
+```
+
+## 🌟 Vantagens do Context Navigator
+
+### **📚 Para Desenvolvedores**
+
+- ✅ **Documentação consistente** - Templates padronizados
+- ✅ **Processo ágil** - Criação rápida com `cn new`
+- ✅ **Organização automática** - Estrutura de pastas inteligente
+- ✅ **Histórico de decisões** - ADRs para rastreabilidade
+
+### **👥 Para Equipes**
+
+- ✅ **Padrão unificado** - Toda equipe usa mesma estrutura
+- ✅ **Onboarding facilitado** - Novos membros encontram documentação facilmente
+- ✅ **Knowledge base** - Decisões e processos centralizados
+- ✅ **Code review** - Documentação integrada ao código
+
+### **🏢 Para Projetos**
+
+- ✅ **Manutenibilidade** - Documentação evolui com o código
+- ✅ **Compliance** - Estrutura adequada para auditorias
+- ✅ **Escalabilidade** - Funciona de projetos pequenos a grandes
+- ✅ **Portabilidade** - Sistema global, funciona em qualquer projeto
+
+## 🐛 **Problemas Conhecidos (Alpha)**
+
+### **Limitações Atuais:**
+
+- ⚠️ **Sistema single-user** - cada usuário instala separadamente
+- ⚠️ **Registry simples** - YAML básico, não suporta cenários complexos
+- ⚠️ **Sem migração** de versões anteriores (se existirem)
+
+### **Comandos Futuros (Não Implementados):**
+
+- ❌ `cn status` - status detalhado do workspace
+- ❌ `cn conflicts` - detecção de conflitos
+- ❌ `cn metrics` - métricas de qualidade
+- ❌ `cn advisor` - sugestões automáticas
+
+**Nota:** Estes comandos podem ser implementados em versões futuras ou removidos se não forem úteis.
+
+## ❓ FAQ
+
+### **"Preciso aprender alguma sintaxe especial?"**
+
+Não! O Context Navigator cria arquivos Markdown normais. Você edita com qualquer editor.
+
+### **"Funciona com meu editor favorito?"**
+
+Sim! Os arquivos são Markdown padrão, funcionam com VS Code, nano, gedit, JetBrains, etc.
+
+### **"E se eu mudar de computador?"**
+
+Instale o Context Navigator no novo computador e execute `cn init` nos seus projetos.
+
+### **"Posso usar em projetos existentes?"**
+
+Sim! Execute `cn init` em qualquer projeto existente.
+
+### **"Como backup da documentação?"**
+
+A pasta `.cn_model/` são arquivos normais - use Git, backup em nuvem, etc.
+
+## 📚 Documentação Completa
+
+- **[🤝 Guia de Contribuição](CONTRIBUTING.md)** - Como contribuir para o projeto
+- **[🏗️ Arquitetura](docs/ARQUITETURA_SIMPLIFICADA.md)** - Visão técnica simplificada
+- **[📖 Manual Completo](docs/c1-systems/MANUAL_HUMANO.md)** - Documentação detalhada
 - **[🤖 Manual para IA](docs/c1-systems/MANUAL_IA.md)** - Integração com assistentes
-- **[🏗️ Arquitetura](docs/c1-systems/ARCHITECTURE_2_0_OVERVIEW.md)** - Visão técnica do sistema
 
 ## 🤝 Contribuir
 
-Quer contribuir? Adoramos colaborações!
+Quer ajudar a melhorar o Context Navigator?
 
 - **🐛 [Reportar bugs](https://github.com/gen-ge/metamodel/issues)**
 - **💡 [Sugerir funcionalidades](https://github.com/gen-ge/metamodel/discussions)**
-- **🛠️ [Contribuir código](CONTRIBUTING.md)** - Guia completo para desenvolvedores
-
-### **Setup de Desenvolvimento (30s)**
-
-```bash
-git clone https://github.com/gen-ge/metamodel.git
-cd metamodel && make setup
-
-# Desenvolvimento com mudanças imediatas
-./cndev.sh help
-```
-
-Ver **[CONTRIBUTING.md](CONTRIBUTING.md)** para workflow completo.
+- **🛠️ [Contribuir código](CONTRIBUTING.md)** - Guia para desenvolvedores
 
 ## 📄 Licença
 
@@ -185,18 +390,27 @@ Ver **[CONTRIBUTING.md](CONTRIBUTING.md)** para workflow completo.
 
 ---
 
-## 🚀 Comece Agora!
+## 🚀 Comece Agora (Alpha)!
 
 ```bash
-# 1 comando para instalar
-curl -L https://github.com/gen-ge/metamodel/releases/latest/download/install-context-navigator-latest.sh | bash
+# 1. Baixar e instalar
+git clone https://github.com/gen-ge/metamodel.git
+cd metamodel
+python3 src/context_navigator/installer/install.py
 
-# Usar imediatamente
-cn init
-cn demo
+# 2. Validar instalação
+./test_real_install.sh  # Opcional: validar que funciona
+
+# 3. Usar em seu projeto
+cd seu-projeto/
+cn init                 # Criar workspace
+cn templates            # Ver tipos disponíveis
+cn new decision "primeira-decisao"  # Criar primeiro documento
 ```
 
-**Transforme sua documentação hoje mesmo!** 🎯
+**Context Navigator 0.1.0-alpha: Funciona de verdade!** 🎯
+
+⚠️ **Lembre-se:** Esta é uma versão alpha. Reporte problemas [aqui](https://github.com/gen-ge/metamodel/issues).
 
 ---
 

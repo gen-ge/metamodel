@@ -48,18 +48,31 @@ class WorkspaceRegistry:
     
     def _get_global_installation_path(self) -> Path:
         """Detecta onde está a instalação global do Context Navigator"""
-        # Verificar localizações possíveis
+        
+        # MODO DE DESENVOLVIMENTO: Se rodando do src/, usar fallback sempre
+        current_path = Path(__file__).resolve()
+        if "src/context_navigator" in str(current_path):
+            print("🛠️ Modo de desenvolvimento detectado - usando registry local")
+            return current_path.parent.parent
+
+        # MODO PRODUÇÃO: Verificar localizações possíveis de instalação
         possible_locations = [
+            # 1. Diretório da instalação atual (onde está o arquivo)
+            current_path.parent.parent,  # /path/to/install/core -> /path/to/install
+            
+            # 2. Locais padrão do sistema
             Path("/opt/context-navigator"),
             Path.home() / ".local" / "share" / "context-navigator",
         ]
         
         for location in possible_locations:
             if location.exists() and (location / "core").exists():
+                print(f"🎯 Instalação detectada: {location}")
                 return location
         
         # Fallback: usar current script path (desenvolvimento)
-        return Path(__file__).parent.parent
+        print(f"🔄 Fallback para desenvolvimento: {current_path.parent.parent}")
+        return current_path.parent.parent
     
     def _ensure_registry_exists(self):
         """Garante que o arquivo de registry existe"""
@@ -183,18 +196,29 @@ class WorkspaceManager:
         self.registry = WorkspaceRegistry()
     
     def detect_current_workspace(self) -> Optional[Workspace]:
-        """
-        Detecta workspace atual baseado no diretório corrente
-        Algoritmo similar ao git (busca .cn_model/.cn_workspace subindo)
-        """
+        """Detectar workspace APENAS via registry (não busca hierárquica)"""
+
         current_path = Path.cwd().resolve()
-        workspace_root = self._find_workspace_root(current_path)
-        
-        if workspace_root:
-            workspace = self.load_workspace(workspace_root)
-            # Atualizar último acesso no registry
-            self.registry.update_last_accessed(workspace.id)
-            return workspace
+
+        # Buscar no registry por path exato ou pai
+        for workspace_info in self.registry.list_workspaces():
+            workspace_path = Path(workspace_info['path']).resolve()
+
+            # Workspace exato ou subdiretório
+            if current_path == workspace_path or current_path.is_relative_to(workspace_path):
+                # Atualizar last_accessed
+                self.registry.update_last_accessed(workspace_info['id'])
+                
+                # Carregar workspace completo
+                return Workspace(
+                    id=workspace_info['id'],
+                    name=workspace_info['name'],
+                    root_path=workspace_path,
+                    config_path=Path(workspace_info.get('config_path', '')),
+                    created_at=workspace_info['created_at'],
+                    configuration={}
+                )
+
         return None
     
     def _find_workspace_root(self, start_path: Path) -> Optional[Path]:

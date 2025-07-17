@@ -1,21 +1,17 @@
 """
-Context Navigator - Core Scripts
-Scripts essenciais de processamento principal
+Context Navigator - Processing Engines
+Engines essenciais de processamento (scanner, context engine)
 """
 
 from .context_scanner import ContextScanner
 from .context_engine import ContextEngine
 
-# Import WorkspaceManager from the correct location for scripts that need it
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from core.workspace_manager import WorkspaceManager
+# Clean import - WorkspaceManager available when needed via context
 
-__all__ = ['ContextScanner', 'ContextEngine', 'WorkspaceManager']
+__all__ = ['ContextScanner', 'ContextEngine']
 
-# Documentação dos scripts
-SCRIPTS = {
+# Documentação dos engines
+ENGINES = {
     'context_scanner': {
         'description': 'Escaneia documentos e gera mapas de contexto',
         'class': 'ContextScanner',

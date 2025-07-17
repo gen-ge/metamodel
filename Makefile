@@ -45,7 +45,7 @@ install: ## Instalar versão de desenvolvimento globalmente
 
 clean: ## Limpar arquivos de build
 	@echo "🧹 Limpando arquivos de build..."
-	@python3 build.py --clean-only
+	@python3 build.py --clean
 	@rm -f cndev.sh.bak
 
 setup: ## Setup inicial para novos desenvolvedores
@@ -58,6 +58,9 @@ setup: ## Setup inicial para novos desenvolvedores
 	@echo "  make dev-scan    # Testar scan"
 	@echo "  make dev-demo    # Ver demonstração"
 	@echo "  make build       # Criar build"
+	@echo ""
+	@echo "💡 NOTA: ./cndev.sh usa registry LOCAL (desenvolvimento)"
+	@echo "💡       cn usa registry GLOBAL (produção)"
 
 # Comandos para CI/CD (futuro)
 ci-test: ## Testes para CI/CD

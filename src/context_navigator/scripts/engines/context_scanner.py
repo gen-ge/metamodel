@@ -74,7 +74,7 @@ class ContextScanner:
         """Inicializa usando WorkspaceManager para detectar workspace"""
         # Importar WorkspaceManager
         try:
-            # Import relativo correto para estrutura core/ e scripts/core/
+            # Import relativo correto para estrutura core/ e scripts/engines/
             from ...core.workspace_manager import WorkspaceManager, Workspace
         except ImportError:
             try:

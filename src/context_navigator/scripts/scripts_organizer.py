@@ -17,16 +17,16 @@ class ScriptsOrganizer:
         
         # Mapa da nova estrutura
         self.script_map = {
-            'core': {
-                'description': 'Scripts essenciais de processamento principal',
+            'engines': {
+                'description': 'Engines essenciais de processamento principal',
                 'scripts': {
                     'context_scanner': {
-                        'file': 'core/context_scanner.py',
+                        'file': 'engines/context_scanner.py',
                         'description': 'Escaneia documentos e gera mapas de contexto',
                         'main_class': 'ContextScanner'
                     },
                     'context_engine': {
-                        'file': 'core/context_engine.py', 
+                        'file': 'engines/context_engine.py', 
                         'description': 'Motor principal de processamento contextual',
                         'main_class': 'ContextEngine'
                     }

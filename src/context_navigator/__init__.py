@@ -20,8 +20,8 @@ COMPORTAMENTO BURRO: sempre funciona igual, sem tentativas de "ser inteligente"
 
 __version__ = "1.1.0"
 
-# Entry point principal
-from . import cn_cli_legacy as cn_cli
+# Entry point principal - SISTEMA UNIFICADO
+# from . import cn_cli_legacy as cn_cli  # REMOVIDO - Sistema legacy eliminado
 
 # Para usar como módulo:
-# python -m context_navigator.cn_cli_legacy
+# python -m context_navigator.core.cn_global
